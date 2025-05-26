@@ -1,0 +1,148 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[colorinlistoftodos]{todonotes}
+
+\title{Causal Discovery on HBSC Data}
+\author{Daryna Nedilko gtb950}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+[Concise summary of the causal discovery problem, your chosen algorithm(s), dataset (HBSC 2018), key challenges (e.g., categorical variables, missing data), main results (e.g., structure learned via FCI), and interpretation of the discovered relationships.]
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+[Introduce causal discovery and its relevance in analyzing real-world observational data such as HBSC. Briefly mention the motivation for exploring adolescent health behaviors using a causal lens, and the expected outcomes of your analysis.]
+
+\section{Selected Algorithm}
+\label{sec:algorithm}
+
+\subsection{Algorithm Description}
+[Describe the FCI algorithm: inputs, outputs (PAG), and how it works using conditional independence tests.]
+
+\subsection{Assumptions}
+[Explain assumptions like causal sufficiency (not required for FCI), faithfulness, and correctness of the conditional independence tests.]
+
+\subsection{Advantages and Limitations}
+[Discuss strengths (e.g., handles latent confounding) and challenges (e.g., complexity, sensitivity to CI test errors).]
+
+\subsection{Graph Type}
+[Explain that FCI estimates a Partial Ancestral Graph (PAG), allowing for bi-directed and circle-ended edges to account for hidden variables.]
+
+\section{Dataset Description}
+\label{sec:dataset}
+
+\subsection{Source and Context}
+We use the Health Behaviour in School-aged Children (HBSC) dataset from 2018, a WHO-supported cross-national survey that collects health-related data from adolescents aged 11, 13, and 15. It includes data on well-being, social relationships, behaviors, and demographic characteristics across more than 40 countries.
+
+\subsection{Variables Selected}
+[Describe which variables are selected for analysis (e.g., life satisfaction, communication with parents, peer support, family affluence, gender) and their scales.]
+
+\subsection{Data Issues and Preprocessing}
+\begin{itemize}
+    \item \textbf{Missing data}: [How you handled NA values — deletion, imputation, etc.]
+    \item \textbf{Data types}: [How categorical variables were encoded — label encoding, discretization]
+    \item \textbf{Sample size}: [Number of observations after cleaning]
+\end{itemize}
+
+\subsection{Scientific Question}
+Relationship of social integration of a child and aggression levels channeled through bullying and participation in fights.  
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Report/pics/cycle of abuse.png}
+        \caption{Inspirational diagram for forming a scientific question.}
+        \label{fig:cycle-of-abuse}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Report/pics/scheme for scientific question.png}
+        \caption{Conceptual scheme illustrating the scientific question.}
+        \label{fig:scientific-question}
+    \end{subfigure}
+    \caption{The first figure serves as inspiration, while the second is a vague schematic formulation of our scientific question.}
+    \label{fig:question-figures}
+\end{figure}
+
+
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Causal Discovery Setup}
+[Explain the full pipeline: preprocessing → conditional independence tests → FCI execution → graph extraction.]
+
+\subsection{Parameter Choices}
+[Describe the independence test (e.g., G² test or Fisher's Z), significance level (e.g., $\alpha = 0.05$), and library used (e.g., `causal-learn` in Python).]
+
+\subsection{Software and Implementation}
+[Specify tools used: Python, causal-learn, pandas, numpy, matplotlib. Optionally show code snippets.]
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Learned Causal Structure}
+[Include your graph as a figure.]
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{fci_result.png}
+\caption{Learned PAG using FCI algorithm on HBSC 2018 subset.}
+\label{fig:fci_graph}
+\end{figure}
+
+\subsection{Interpretation}
+[Explain notable relationships (e.g., parental communication → peer trust → life satisfaction). Which arrows suggest direct influence? Where are bidirected edges?]
+
+\subsection{Sensitivity to Parameters}
+[Optionally, mention results under different $\alpha$ values, sample sizes, or independence tests.]
+
+\section{Discussion}
+\label{sec:discussion}
+
+\begin{itemize}
+    \item Are the discovered causal paths meaningful and interpretable?
+    \item What are the limitations of this approach given the observational nature of HBSC?
+    \item Are the assumptions of the FCI algorithm likely to hold in this case?
+    \item Could latent variables (e.g., personality traits) explain some of the results?
+\end{itemize}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+[Summarize the main contributions: application of FCI to HBSC data, handling challenges of mixed data and confounding, and interpretation of the resulting PAG. Mention possible future work, such as testing other algorithms (e.g., GES) or estimating causal effects using IDA.]
+
+\begin{thebibliography}{9}
+\bibitem{pearl2009causality}
+  Judea Pearl,
+  \emph{Causality: Models, Reasoning and Inference}.
+  Cambridge University Press, 2009.
+
+\bibitem{spirtes2000causation}
+  Peter Spirtes, Clark Glymour, and Richard Scheines,
+  \emph{Causation, Prediction, and Search}.
+  MIT Press, 2000.
+
+\bibitem{zheng2018dags}
+  Xun Zheng et al.,
+  \emph{DAGs with NO TEARS: Continuous Optimization for Structure Learning}.
+  NeurIPS, 2018.
+
+\bibitem{glymour2019review}
+  Clark Glymour, Kun Zhang, and Peter Spirtes,
+  \emph{Review of causal discovery methods based on graphical models}.
+  Frontiers in Genetics, 10 (2019): 524.
+\end{thebibliography}
+
+\end{document}
