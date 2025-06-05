@@ -1,0 +1,58 @@
+\section{Data Description and Preparation}
+
+\subsection{Source and Context}
+We use the Health Behaviour in School-aged Children (HBSC) dataset from 2018, a WHO-supported cross-national survey that collects health-related data from adolescents aged 11, 13, and 15. It includes data on well-being, social relationships, behaviours, and demographic characteristics across more than 40 countries. The dataset contains 120 variables.
+
+\subsection{Missing Data}
+In the appendix, the number of missing values coded as sysmiss and represented as Nones in the dataset is shown. Besides that, there are also more types of missingness observed in data, such as "Missing due to skip pattern"(99) or "Missing due to inconsistent answer"(-99).
+
+\input{Report/final_report/tables/far_sup_table}
+\input{Report/final_report/tables/mor_sup_table}
+
+\subsection{Variables Selected}
+The \textbf{variables used to calculate the Family Affluence Scale III (FAS III)} are:
+
+\begin{longtable}{@{}ll@{}}
+\toprule
+\textbf{Variable Name} & \textbf{Description} \\
+\midrule
+\texttt{fasfamcar} & Does your family own a car, van or truck? \\
+\texttt{fasbedroom} & Do you have your own bedroom for yourself? \\
+\texttt{fascompu} & Number of computers (PCs, laptops, tablets) in the household \\
+\texttt{fasbathr} & Number of bathrooms in the home (with bath or shower) \\
+\texttt{fasdishw} & Does your family have a dishwasher? \\
+\texttt{fasholid} & How many times did your family travel abroad for holidays last year? \\
+\bottomrule
+\end{longtable}
+
+These are the six core material affluence indicators retained in the HBSC FAS III scoring system. In addition to these, the dataset includes two computed indicators:
+\begin{itemize}
+  \item \texttt{IRFAS} – Family Affluence Scale III (continuous score)
+  \item \texttt{IRRELFAS} – Relative family affluence category (categorical: low, medium, high)
+\end{itemize}
+
+\subsection{Data Issues and Preprocessing}
+\begin{itemize}
+    \item \textbf{Missing data}: [How you handled NA values - deletion, imputation, etc.]
+    \item \textbf{Data types}: [How categorical variables were encoded - label encoding, discretization]
+    \item \textbf{Sample size}: [Number of observations after cleaning]
+\end{itemize}
+
+% \subsection{Scientific Question}
+% Relationship of social integration of a child and aggression levels channeled through bullying and participation in fights.
+
+% \begin{figure}[h]
+%     \centering
+%     \begin{subfigure}[t]{0.48\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{Report/pics/cycle of abuse.png}
+%         \caption{Inspirational diagram for forming a scientific question.}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[t]{0.48\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{Report/pics/scheme for scientific question.png}
+%         \caption{Conceptual scheme illustrating the scientific question.}
+%     \end{subfigure}
+%     \caption{The first figure serves as inspiration, while the second is a vague schematic formulation of our scientific question.}
+% \end{figure}
