@@ -1,0 +1,95 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+
+\title{Causal Discovery in Complex Systems}
+
+\author{Your Name(s)}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+[Provide a concise summary of the problem, method, data, and findings.]
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+[Introduce the problem of causal discovery, its importance in science and machine learning, key challenges, and an overview of your contributions.]
+
+\section{Related Work}
+\label{sec:related-work}
+
+[Summarize existing methods in causal discovery, such as constraint-based, score-based, and functional approaches. Mention key models like PC, FCI, LiNGAM, GES, and NOTEARS.]
+
+\section{Background and Theory}
+\label{sec:background}
+
+\subsection{Causal Graphical Models}
+[Define directed acyclic graphs (DAGs), d-separation, and the causal Markov condition.]
+
+\subsection{Identifiability and Assumptions}
+[Discuss assumptions like faithfulness, causal sufficiency, and additive noise models.]
+
+\subsection{Causal Discovery Algorithms}
+[Briefly describe the classes of causal discovery algorithms relevant to your paper.]
+
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Problem Formulation}
+[Define the causal discovery problem and your setting (e.g., observational/interventional, linear/nonlinear).]
+
+\subsection{Proposed Method}
+[Describe your approach, including theoretical justification and algorithmic details.]
+
+\subsection{Implementation Details}
+[Note implementation choices, optimization, libraries, or toolkits used.]
+
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Datasets}
+[Describe synthetic or real-world datasets used for benchmarking.]
+
+\subsection{Experimental Setup}
+[Detail your evaluation protocol, baselines, metrics (e.g., SHD, AUC), and parameters.]
+
+\subsection{Results and Analysis}
+[Present results as tables or figures. Include comparisons and ablations if applicable.]
+
+\section{Discussion}
+\label{sec:discussion}
+
+[Interpret the results, limitations, practical implications, and how this method advances the field.]
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+[Summarize the main contributions, results, and potential future work.]
+
+\begin{thebibliography}{9}
+\bibitem{pearl2009causality}
+  Judea Pearl,
+  \emph{Causality: Models, Reasoning and Inference}.
+  Cambridge University Press, 2009.
+
+\bibitem{spirtes2000causation}
+  Peter Spirtes, Clark Glymour, and Richard Scheines,
+  \emph{Causation, Prediction, and Search}.
+  MIT Press, 2000.
+
+\bibitem{zheng2018dags}
+  Xun Zheng et al.,
+  \emph{DAGs with NO TEARS: Continuous Optimization for Structure Learning}.
+  NeurIPS, 2018.
+\end{thebibliography}
+
+\end{document}
