@@ -1,0 +1,18 @@
+{
+  "Demographics & Metadata": ["HBSC", "seqno_int", "cluster", "countryno", "region", "id1", "id2", "id3", "id4", "weight", "adm", "month", "year", "age", "agecat", "sex", "grade", "monthbirth", "yearbirth"],
+  "Family Affluence Scale": ["fasfamcar", "fasbedroom", "fascomputers", "fasbathroom", "fasdishwash", "fasholidays", "IRFAS", "IRRELFAS_LMH"],
+  "Health & Well-being": ["health", "lifesat", "MBMI", "IOTF4", "oweight_who"],
+  "Somatic Symptoms": ["headache", "stomachache", "backache", "feellow", "irritable", "nervous", "sleepdificulty", "dizzy", "thinkbody"],
+  "Health Behaviors": ["physact60", "timeexe", "breakfastwd", "breakfastwe", "fruits_2", "vegetables_2", "sweets_2", "softdrinks_2", "fmeal", "toothbr", "smokltm", "smok30d_2", "alcltm", "alc30d_2", "drunkltm", "drunk30d", "cannabisltm_2", "cannabis30d_2"],
+  "Body Measures": ["bodyweight", "bodyheight"],
+  "School Experience": ["likeschool", "schoolpressure", "studtogether", "studhelpful", "studaccept", "teacheraccept", "teachercare", "teachertrust"],
+  "Violence and Bullying": ["bulliedothers", "beenbullied", "cbulliedothers", "cbeenbullied", "fight12m", "injured12m"],
+  "Peer Support": ["friendhelp", "friendcounton", "friendshare", "friendtalk"],
+  "Emotional Communication Preferences": ["emconlfreq1", "emconlfreq2", "emconlfreq3", "emconlfreq4", "emconlpref1", "emconlpref2", "emconlpref3", "emcsocmed1", "emcsocmed2", "emcsocmed3", "emcsocmed4", "emcsocmed5", "emcsocmed6", "emcsocmed7", "emcsocmed8", "emcsocmed9"],
+  "Sexual Health": ["hadsex", "agesex", "contraceptcondom", "contraceptpill"],
+  "Migration Background": ["countryborn", "countrybornmo", "countrybornfa"],
+  "Household Composition": ["motherhome1", "fatherhome1", "stepmohome1", "stepfahome1", "fosterhome1", "elsehome1_2"],
+  "Parental Employment": ["employfa", "employmo", "employnotfa", "employnotmo"],
+  "Parent–Child Communication": ["talkfather", "talkstepfa", "talkmother", "talkstepmo"],
+  "Family Support": ["famhelp", "famsup", "famtalk", "famdec"]
+}
