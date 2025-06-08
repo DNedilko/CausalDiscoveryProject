@@ -77,7 +77,7 @@ def picture_to_tex(
     # Generate LaTeX code
     latex_code = f"""\\begin{{figure}}[htbp]
     \\centering
-    \\includegraphics[width={width}]{{{image_filename}}}
+    \\includegraphics[width={width}]{{Report/final_report/pictures/{image_filename}}}
     \\caption{{{caption}}}
     \\label{{fig:{label}}}
 \\end{{figure}}

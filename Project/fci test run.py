@@ -305,11 +305,11 @@ if __name__ == "__main__":
               "lifesat", "famhelp", "famsup", "famtalk",
               "famdec", "friendhelp", "friendcounton", "friendshare", "friendtalk",
               "likeschool", "schoolpressure", "studtogether", "studhelpful", "studaccept",
-              "teacheraccept", "teachercare", "teachertrust", "IRRELFAS_LMH"
+              "teacheraccept", "teachercare", "teachertrust", "IRFAS"
               ]
 
 
-    iterator_over_fci(retain, "any", False, region = "UA")
+    iterator_o ver_fci(retain, "any", False, region = "UA")
     #iterator_over_fci(retain, how='any', verbose=False)
     # retain = [
     #     # "sex", "agecat", "IRFAS",
