@@ -270,13 +270,13 @@ def iterator_over_fci(retain, how: str = "all", verbose: bool = False):
 
 if __name__ == "__main__":
     retain = ["bulliedothers", "beenbullied",
-              # "cbulliedothers", "cbeenbullied",
+              "cbulliedothers", "cbeenbullied",
               "fight12m",
-              # "injured12m",
+              "injured12m",
               "lifesat", "famhelp", "famsup", "famtalk",
               "famdec", "friendhelp", "friendcounton", "friendshare", "friendtalk",
               "likeschool", "schoolpressure", "studtogether", "studhelpful", "studaccept",
-              "teacheraccept", "teachercare", "teachertrust"
+              "teacheraccept", "teachercare", "teachertrust", "IRRELFAS_LMH"
               ]
 
 

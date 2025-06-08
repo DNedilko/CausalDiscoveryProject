@@ -195,19 +195,20 @@ def iterator_over_fci(retain, how : str = "all", verbose: bool  = False, region:
             for alpha in significance_levels:
                 print(f"Running FCI with {ci_test} at alpha={alpha}")
                 start_time = time.time()
+                fci_data = data_dictionary[gr]
                 label = run_fci(
-                    data_dictionary[gr],
+                    fci_data,
                     test_map,
                     ci_test,
                     sign_level=alpha,
                     feature_names=retain,
-                    subscript = f'{gr}_{region}',
+                    subscript = f'{gr}_{region}_{len(retain)}',
                     verbose = verbose
                 )
                 elapsed_time = time.time() - start_time
                 ref = f"\\ref{{fig:{label}}}"
                 results.loc[len(results)] = [ci_test, alpha, elapsed_time, ref]
-    label = f"fci_parameters_time_{region}"
+    label = f"fci_parameters_time_{region}_{len(retain)}"
     [length] = list(map(len, data_list))
     caption = f'Summary of optimal parameters search for FCI algorithm with corresponding time required for execution. The experiments are ran on {len(retain)} variables, sample size {length} records from {region}.'
     df_to_tex(results, caption=caption, label=label)
@@ -300,11 +301,11 @@ if __name__ == "__main__":
     retain = ["bulliedothers", "beenbullied",
               "cbulliedothers", "cbeenbullied",
               "fight12m",
-               "injured12m",
+              "injured12m",
               "lifesat", "famhelp", "famsup", "famtalk",
               "famdec", "friendhelp", "friendcounton", "friendshare", "friendtalk",
               "likeschool", "schoolpressure", "studtogether", "studhelpful", "studaccept",
-              "teacheraccept", "teachercare", "teachertrust"
+              "teacheraccept", "teachercare", "teachertrust", "IRRELFAS_LMH"
               ]
 
 
