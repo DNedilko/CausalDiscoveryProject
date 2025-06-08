@@ -43,9 +43,11 @@ def df_to_tex(
             insert_at = 1  # fallback
         lines.insert(insert_at, caption_line[0])
         latex_str = "\n".join(lines)
-    with open(path, "w", encoding="utf-8") as f:
+    tex_filename = f"{label}.tex"
+    tex_file_path = os.path.join(path, tex_filename)
+    with open(tex_file_path, "w", encoding="utf-8") as f:
         f.write(latex_str)
-    print(f"LaTeX table with caption below saved to {path}")
+    print(f"LaTeX table with caption below saved to {tex_file_path}")
 
 
 def picture_to_tex(
