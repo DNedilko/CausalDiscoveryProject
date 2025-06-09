@@ -25,24 +25,24 @@ def df_to_tex(
         caption=caption,
         label=f'tab:{label}',
         float_format="%.3f".__mod__,
-        longtable=True,
+        longtable=False,
         multicolumn_format='c',
         multirow=True,
         index=False  # Optionally suppress index column
     )
-    lines = latex_str.splitlines()
-    caption_line = [line for line in lines if line.strip().startswith(r'\caption')]
-    if caption_line:
-        lines.remove(caption_line[0])
-        # Find where to insert: after \begin{longtable} or \begin{tabular}
-        for i, line in enumerate(lines):
-            if line.strip().startswith(r'\begin{longtable}') or line.strip().startswith(r'\begin{tabular}'):
-                insert_at = i + 1
-                break
-        else:
-            insert_at = 1  # fallback
-        lines.insert(insert_at, caption_line[0])
-        latex_str = "\n".join(lines)
+    # lines = latex_str.splitlines()
+    # caption_line = [line for line in lines if line.strip().startswith(r'\caption')]
+    # if caption_line:
+    #     lines.remove(caption_line[0])
+    #     # Find where to insert: after \begin{longtable} or \begin{tabular}
+    #     for i, line in enumerate(lines):
+    #         if line.strip().startswith(r'\begin{longtable}') or line.strip().startswith(r'\begin{tabular}'):
+    #             insert_at = i + 1
+    #             break
+    #     else:
+    #         insert_at = 1  # fallback
+    #     lines.insert(insert_at, caption_line[0])
+    #     latex_str = "\n".join(lines)
     tex_filename = f"{label}.tex"
     tex_file_path = os.path.join(path, tex_filename)
     with open(tex_file_path, "w", encoding="utf-8") as f:

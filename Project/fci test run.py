@@ -208,7 +208,7 @@ def iterator_over_fci(retain, how : str = "all", verbose: bool  = False, region:
                 elapsed_time = time.time() - start_time
                 ref = f"\\ref{{fig:{label}}}"
                 results.loc[len(results)] = [ci_test, alpha, elapsed_time, ref]
-    label = f"fci_parameters_time_{region}_{len(retain)}"
+    label = f"fci_parameters_time_{region}_{len(retain)}_{retain[-1]}"
     [length] = list(map(len, data_list))
     caption = f'Summary of optimal parameters search for FCI algorithm with corresponding time required for execution. The experiments are ran on {len(retain)} variables, sample size {length} records from {region}.'
     df_to_tex(results, caption=caption, label=label)
@@ -305,11 +305,12 @@ if __name__ == "__main__":
               "lifesat", "famhelp", "famsup", "famtalk",
               "famdec", "friendhelp", "friendcounton", "friendshare", "friendtalk",
               "likeschool", "schoolpressure", "studtogether", "studhelpful", "studaccept",
-              "teacheraccept", "teachercare", "teachertrust", "IRFAS"
+              "teacheraccept", "teachercare", "teachertrust","timeexe", "talkfather", "talkstepfa", "talkmother", "talkstepmo",
+              "IRFAS"
               ]
 
 
-    iterator_o ver_fci(retain, "any", False, region = "UA")
+    iterator_over_fci(retain, "any", False, region = "UA")
     #iterator_over_fci(retain, how='any', verbose=False)
     # retain = [
     #     # "sex", "agecat", "IRFAS",
