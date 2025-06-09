@@ -3,6 +3,7 @@
 \usepackage[english]{babel}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{graphics}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{appendix}
@@ -10,12 +11,12 @@
 \usepackage{natbib}
 \usepackage{hyperref}
 \usepackage{geometry}
+\usepackage{float}
 \geometry{margin=1in}
-
 \title{Causal Discovery on HBSC Data}
 \author{Daryna Nedilko gtb950}
 \date{\today}
-
+\usepackage{subfiles}
 \begin{document}
 
 \maketitle
@@ -24,20 +25,20 @@
 
 \tableofcontents
 
-\input{Report/final_report/introduction}
-\input{Report/final_report/data}
-\input{Report/final_report/theory}
-\input{Report/final_report/methodology}
-\input{Report/final_report/introduction}
-\input{Report/final_report/results}
-\input{Report/final_report/discussion}
-\input{Report/final_report/conclusion}
+\subfile{introduction}
+\subfile{data}
+\subfile{theory}
+ \subfile{methodology}
+ \subfile{implementation}
+ \subfile{results}
+ \subfile{discussion}
+\subfile{conclusion}
 
 \bibliographystyle{plainnat}
 \bibliography{references}
 
 \begin{appendices}
-\input{Report/final_report/appendix}
+\subfile{Report/final_report/appendix}
 \end{appendices}
 
 \end{document}
