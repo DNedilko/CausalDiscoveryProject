@@ -3,62 +3,66 @@
 
 \section{Data Description and Preparation}
 
-\subsection{Source and Context}
-We use the 2018 Health Behaviour in School-aged Children (HBSC) dataset, a cross-national survey supported by the WHO, which gathers health-related information from adolescents aged 11, 13, and 15. This dataset encompasses over 120 variables and covers aspects such as well-being, social relationships, behaviours, and demographic characteristics across more than 40 countries. The dataset comprises 120 variables.
+\subsection{Source, Context, and Variable Selection}
+We use the 2018 Health Behaviour in School-aged Children (HBSC) dataset, a cross-national survey supported by the WHO, which gathers health-related information from adolescents aged 11, 13, and 15. This dataset encompasses over 120 variables and covers aspects such as well-being, social relationships, behaviours, and demographic characteristics across more than 40 countries. The dataset comprises 120 variables. Detailed description of each variable available in the official report \cite{HBSC2018OA_ed1}. 
 
 These variables offer in-depth insights into individuals' health, well-being, and lifestyles. Furthermore, they include indicators related to family structure, affluence, and socio-economic status. For our research, the most critical variables are those measuring the frequency of bullying and how well individuals perceive their social integration within groups, including school peers and friends, the expression of their emotions, and their overall life satisfaction(See Table \ref{tab:hbsc_variables_grouped}  - key categories are in bold).
-
-\begin{table}[!ht]
+\begin{table}[h]
   \centering
-  \begin{tabular}{|p{40mm}|p{100mm}|}
-  \toprule
-  \textbf{Category}&\textbf{Variables}\\
-  \toprule
-    Demographics \& Metadata & HBSC, seqno\_int, cluster, countryno, region, id1, id2, id3, id4, weight, adm, month, year, age, agecat, sex, grade, monthbirth, yearbirth \\ \hline
-    Family Affluence Scale & fasfamcar, fasbedroom, fascomputers, fasbathroom, fasdishwash, fasholidays, IRFAS, IRRELFAS\_LMH \\ \hline
-    Health \& Well-being & health, lifesat, MBMI, IOTF4, oweight\_who \\ \hline
-    Somatic Symptoms & headache, stomachache, backache, feellow, irritable, nervous, sleepdificulty, dizzy, thinkbody \\ \hline
-    Health Behaviors & physact60, timeexe, breakfastwd, breakfastwe, fruits\_2, vegetables\_2, sweets\_2, softdrinks\_2, fmeal, toothbr, smokltm, smok30d\_2, alcltm, alc30d\_2, drunkltm, drunk30d, cannabisltm\_2, cannabis30d\_2 \\ \hline
-    Body Measures & bodyweight, bodyheight \\ \hline
-    \textbf{School Experience }& likeschool, schoolpressure, studtogether, studhelpful, studaccept, teacheraccept, teachercare, teachertrust \\ \hline
-    \textbf{Violence and Bullying} & bulliedothers, beenbullied, cbulliedothers, cbeenbullied, fight12m, injured12m \\ \hline
-    \textbf{Peer Support} & friendhelp, friendcounton, friendshare, friendtalk \\ \hline
-    \textbf{Emotional Communication Preferences} & emconlfreq1, emconlfreq2, emconlfreq3, emconlfreq4, emconlpref1, emconlpref2, emconlpref3, emcsocmed1, emcsocmed2, emcsocmed3, emcsocmed4, emcsocmed5, emcsocmed6, emcsocmed7, emcsocmed8, emcsocmed9 \\ \hline
-    Sexual Health & hadsex, agesex, contraceptcondom, contraceptpill \\ \hline
-    Migration Background & countryborn, countrybornmo, countrybornfa \\ \hline
-    Household Composition & motherhome1, fatherhome1, stepmohome1, stepfahome1, fosterhome1, elsehome1\_2 \\ \hline
-    Parental Employment & employfa, employmo, employnotfa, employnotmo \\ \hline
-    \textbf{Parent–Child Communication} & talkfather, talkstepfa, talkmother, talkstepmo \\ \hline
-    \textbf{Family Support} & famhelp, famsup, famtalk, famdec \\ \hline
-  \end{tabular}
-  \caption{120 fields from the HBSC dataset categorised according to the content of their corresponding survey questions. }
+  \begin{tabular}{|p{25mm}|p{65mm}|p{65mm}|}
+    \hline
+        Category & Include Variables & Exclude Variables \\ \hline
+        Demographics \& Metadata & agecat, sex & HBSC, seqno\_int, cluster, id1, id2, id3, id4, weight, adm, month, year, countryno, monthbirth, yearbirth, grade, region, age \\ \hline
+        Family Affluence Scale & fasfamcar, fasbedroom, fascomputers, fasbathroom, fasdishwash, fasholidays & IRFAS, IRRELFAS\_LMH \\ \hline
+        Health \& Well-being & health, lifesat, thinkbody, headache, stomachache, backache, feellow, irritable, nervous, sleepdificulty, dizzy & MBMI, IOTF4, oweight\_who \\ \hline
+        Health Behaviors & physact60, timeexe & breakfastwd, breakfastwe, fruits\_2, vegetables\_2, sweets\_2, softdrinks\_2, fmeal, toothbr, smokltm, smok30d\_2, alcltm, alc30d\_2, drunkltm, drunk30d, cannabisltm\_2, cannabis30d\_2 \\ \hline
+        Body Measures & bodyweight, bodyheight & - \\ \hline
+        School Experience & likeschool, schoolpressure, studtogether, studhelpful, studaccept, teacheraccept, teachercare, teachertrust & - \\ \hline
+        Violence and Bullying & bulliedothers, cbulliedothers, fight12m, injured12m, beenbullied, cbeenbullied & - \\ \hline
+        Peer Support & friendhelp, friendcounton, friendshare, friendtalk & - \\ \hline
+        Emotional Communication & emconlfreq1-4, emconlpref1-3, emcsocmed1-9 & - \\ \hline
+        Sexual Health & - & hadsex, agesex, contraceptcondom, contraceptpill \\ \hline
+        Migration Background & countryborn, countrybornmo, countrybornfa & - \\ \hline
+        Household Composition & motherhome1, fatherhome1, stepmohome1, stepfahome1, fosterhome1, elsehome1\_2 & - \\ \hline
+        Parental Employment & employfa, employmo, employnotfa, employnotmo & - \\ \hline
+        Parent-Child Communication & talkfather, talkstepfa, talkmother, talkstepmo & - \\ \hline
+        Family Support & famhelp, famsup, famtalk, famdec & - \\ \hline
+    \end{tabular}
+  \caption{120 fields from the HBSC dataset categorized according to the content of their corresponding survey questions. Inclusion selection was guided by theoretical importance, relevance as confounders or mediators, and direct links to bullying outcomes. Certain variables were excluded because they are derived from, or fully determined by, other variables already included in the dataset.}
   \label{tab:hbsc_variables_grouped}
 \end{table}
 % In the following sections, we select only a subset that brings the most information to our analysis.
-Variables like IRFAS, IRRELFAS\_LMH are determined by a set of variables that describe family affluence. The \textbf{variables used to calculate the Family Affluence Scale III (FAS III)}  are:
-
-\begin{longtable}{@{}ll@{}}
-\toprule
-\textbf{Variable Name} & \textbf{Description} \\
-\midrule
-\texttt{fasfamcar} & Does your family own a car, van or truck? \\
-\texttt{fasbedroom} & Do you have your own bedroom for yourself? \\
-\texttt{fascompu} & Number of computers (PCs, laptops, tablets) in the household \\
-\texttt{fasbathr} & Number of bathrooms in the home (with bath or shower) \\
-\texttt{fasdishw} & Does your family have a dishwasher? \\
-\texttt{fasholid} & How many times did your family travel abroad for holidays last year? \\
-\bottomrule
-\end{longtable}
-
-These are the six core material affluence indicators retained in the HBSC FAS III scoring system. In addition to these, the dataset includes two computed indicators:
+The dataset includes two computed indicators:
 \begin{itemize}
  \item \texttt{IRFAS} – Family Affluence Scale III (continuous score)
  \item \texttt{IRRELFAS} – Relative family affluence category (categorical: low, medium, high)
 \end{itemize}
  
-\input{Report/final_report/pictures/IRFAS_histogram}
+Variables such as IRFAS and IRRELFAS\_LMH are determined by a set of indicators that reflect family affluence. Table \ref{tab:FAS_variables} outlines the variables used to calculate the Family Affluence Scale III (FAS III). Despite a noticeable gap of nearly 6 points in the average weighted FAS III score for Luxembourg and Armenia (Figure \ref{fig:IRFAS_histogram}), the weighted mode of Relative FAS remains consistent across all regions at a medium level. This prompted us to investigate the relationship between the continuous and categorical versions of the score. Publications\cite{McCormack2011} that FAS is calculated using the following scheme: Responses to individual items were summed to derive a total FAS score and then categorized into three groups (low FAS score = 0 to 4; medium FAS score = 5 or 6; or high FAS score = 7 or 8). However, as one can observe in the table  \ref{tab:IRFAS_IRRELFAS_uniq}, it does not accurately reflect the real data setup, as countries with different FAS III have very similar Relative FAS III distributions \ref{appendix:FASIII_RelFAS}. Therefore, we chose to disregard the categorical version of the score and treated the continuous score as a categorical value, as it is an integer that varies from 0 to 13. The value is set to None if a respondent has not answered any of the component questions (Table \ref{tab:FAS_variables}). Other than that, we deem FAS III redundant for our further analysis, as it is a resulting variable for other socio-economic backgrounds of an individual[Table \ref{tab:hbsc_variables_grouped}].
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l@{}|}
+\toprule
+\textbf{Variable Name} & \textbf{Description} \\
+\midrule
+\texttt{fasfamcar}   & Does your family own a car, van or truck? \\
+\texttt{fasbedroom}  & Do you have your own bedroom for yourself? \\
+\texttt{fascompu}    & Number of computers (PCs, laptops, tablets) in the household \\
+\texttt{fasbathr}    & Number of bathrooms in the home (with bath or shower) \\
+\texttt{fasdishw}    & Does your family have a dishwasher? \\
+\texttt{fasholid}    & How many times did your family travel abroad for holidays last year? \\
+\bottomrule
+\end{tabular}
+\caption{Variable descriptions for Family Affluence Scale (FAS) items}
+\label{tab:FAS_variables}
+\end{table}
 
-As a part of this report. We have decided to focus on Ukraine data, denoted as region UA in the dataset, or country number 804000. This decision is informed by personal experience and cultural context when interpreting the results of Causal Discovery algorithms. Moreover, 
+\input{Report/final_report/pictures/IRFAS_histogram}
+\input{Report/final_report/tables/IRFAS_IRRELFAS_uniq}
+As a part of this report. We have decided to focus on Ukraine data, denoted as region UA in the dataset, or country number 804000. This decision is informed by personal experience and cultural context that ease the task when interpreting the results of Causal Discovery algorithms. 
+Data acquisition in Ukraine was performed in April and May 2018 in pen-and-paper form. Since we are focusing only on one country, it makes sense to ignore columns that take a single value, such as \texttt{HBSC, cluster, countryno, adm, month, and year}, alongside that, we will exclude any metadata like ids or data weight from the causal analysis. Moreover, most of the variables are categorical or discrete. All continuous variables have a categorical counterpart so that we will use those. 
+Generally speaking, demographics [Table \ref{tab:FAS_variables}] and the rest of the variables can be important and serve as confounders or mediators. Hence, we decided to examine each category closely and select variables that contribute most to the analysis of bullying reasons and causes in children. We keep in mind. We are interested in variables that influence bullying. Table \ref{tab:FAS_variables} reflects the bigger subset of variables considered for the analysis. However, we also look into a subset of it that counts 27 variables: \texttt{bulliedothers, beenbullied, cbulliedothers, cbeenbullied, fight12m, lifesat, famhelp, famsup, famtalk, famdec, friendhelp, friendcounton, friendshare, friendtalk, likeschool, schoolpressure, studtogether, studhelpful, studaccept, teacheraccept, teachercare, teachertrust,timeexe, talkfather, talkstepfa, talkmother, talkstepmo}
+
 
 % \input{Report/final_report/tables/hbsc_variables_groups}
 

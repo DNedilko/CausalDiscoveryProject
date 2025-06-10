@@ -1,16 +1,112 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
 \section{Theory}
+For this report, we have decided to focus on constraint-based algorithms, namely Fast Causal Inference (FCI). Constraint-based algorithms like FCI use conditional independence tests to construct causal graphs under core assumptions. The assumptions ensure that statistical independence accurately reflects the actual absence of causation. FCI is particularly valuable for addressing latent confounding and selection bias, which can be a challenge in observational datasets, in our case HBSC surveys. It is a global search algorithm, meaning that it uncovers a full relationship graph between variables specified in the dataset. 
+\subsection{Assumptions}
+\subsubsection*{Causal insufficiency}
+This assumption is required to perform FCI. The opposite of it, causal sufficiency, is a pillar of Causal Discovery. This assumption allows FCI to account for latent confounding. 
+\subsubsection*{Faithfulness}
+One of the key assumptions that is 
+
+\subsubsection*{CI tests suitability and correctness}
+
+\subsection{Key Concepts}
+
+\subsubsection{d-separation}
+
+\subsubsection{Colliders}
+
+\subsection{Conditional Independence tests}
+CI tests check whether nodes $A$ and $B$ are conditionally independent given a conditioning set of nodes $S = \{s_1, \dots, s_d\}$, where $d$ is the number of nodes in the conditioning set. In other words, the test decides whether $S$ is a Sepset (separating set) for $A$ and $B$ in the learnt graph. If $S = \emptyset$, then we are testing for marginal independence between $A$ and $B$. The tests operate using a significance level $\alpha$, which is an arbitrary threshold that determines whether the observed (in)dependence is statistically significant. It's worth noting that while these tests are generally referred to as CI tests, they are also used for checking unconditional independence when $S = \emptyset$. However, they only reflect the conditional independencies present in the dataset, which might not fully match those in the true underlying distribution. These tests can make errors, especially with smaller sample sizes. Mistakes early in the discovery process, like wrongly removing an edge due to a false detection of independence, can lead to incorrect graph structures later on. 
+\subsubsection*{Statistical CI tests for discrete data}
+The most commonly used conditional independence (CI) tests for discrete data are the $ G^2 $ and $ \chi^2 $ statistical tests. Both tests assume a null hypothesis stating that variables A and B are conditionally independent given a set of variables denoted as S. These tests produce a statistic represented by a p-value, which indicates the likelihood of observing the data under the null hypothesis. If the p-value is below a predefined significance level $ \alpha $, the null hypothesis is rejected, leading to the conclusion that A and B are conditionally dependent.
+
+The general form of the \textbf{$ G^2 $ Test} statistic is as follows:
+
+\[
+G^2 = 2 \cdot \sum \text{Observed} \cdot \ln \left( \frac{\text{Observed}}{\text{Expected}} \right)
+\]
+
+When conditioning on S, the observed and expected values are defined as:
+
+\[
+\text{Observed} = N_{\text{obs}} \quad \text{and} \quad \text{Expected} = \frac{N_{\text{bs}} \cdot N_{\text{as}}}{N_s}
+\]
+
+Thus, the $ G^2 $ statistic can be expressed as:
+
+\[
+G^2 = 2 \cdot \sum_{a,b,s} N_{\text{abs}} \ln \left( \frac{N_{\text{abs}} N_s}{N_{\text{bs}} N_{\text{as}}} \right)
+\]
+
+Here, $ a $ and $ b $ range over the values of variables A and B, while $ s $ covers all combinations of values within the set S. In this context, $ N $ represents the size of the corresponding subset. The p-value is calculated under the assumption that none of the values $ N_{\text{abs}} $ is zero, meaning that every possible combination of values is present in the data. If any combination has $ N_{\text{abs}} $ equal to zero, we heuristically reduce the degrees of freedom (df) for the p-value for each such combination.is calculated under the assumption that none of the values $N_{abs}$ is zero. That 
+is, every possible combination of values is present in the data. If it is not, we heuristically reduce $df$ for p-value for every combination of values $N_{abs}$ is zero.
+
+\textbf{$ \chi^2 $ Test} is similar to $G^2$, but define as:
+\[\chi ^2 = 2 \cdot \sum \frac{(Observed - Expected)^2}{Expected}\]
+
 
 \subsection{Algorithm Description}
-[Describe the FCI algorithm: inputs, outputs (PAG), and how it works using conditional independence tests.]
+\subsubsection{Input}
+The algorithm takes as input three components: a dataset, a conditional independence test and a significance level $\alpha$ for the CI tests. Observational data must have variables of interest. The data can be continuous, discrete, or mixed.
+Significance Level($\alpha$): Typically 0.05, to determine whether to reject the null hypothesis of independence.
 
-\subsection{Assumptions}
-[Explain assumptions like causal sufficiency (not required for FCI), faithfulness, and correctness of the conditional independence tests.]
+\subsubsection{Output}
+The algorithm outputs Partial Ancestral Graphs (PAGs). A PAG represents a class of causal graphs (e.g., all DAGs or maximal ancestral graphs) consistent with the observed conditional independencies. PAG are using the following notation:
+\begin{itemize}
+        \item \textbf{Directed edge} ($A \rightarrow B$): Possible direct causation from $A$ to $B$. In graph theory, $A$ is a parent or ancestor of $B$
+        \item \textbf{Bidirected edge} ($A \leftrightarrow B$): Indicates that there is a latent confounder between $A$ and $B$. A and B are neither ancestors nor descendants of each other.
+        \item \textbf{Undirected edge} ($A - B$): Indicates that there is a relation $A$ and $B$, but we cannot conclude the causal direction of it. A and B are both ancestors and descendants of each other.
+        \item \textbf{Circle endpoint} ($A \circ\!\!-\!\!\circ B$, $A \circ\!\!\rightarrow B$): Represents uncertainty about the direction or presence of latent variables. The circle ($\circ$) denotes ambiguity in orientation.
+    \end{itemize}
+    
+\subsubsection{Algorithm Workflow}
+FCI proceeds in three phases:
+
+\textbf{1. Skeleton Construction}
+\begin{itemize}
+  \item Initialization: Start with a fully connected undirected graph.
+  \item Edge Removal: For each pair of variables $A$ and $B$:
+    \begin{itemize}
+      \item Test conditional independence $A \perp\!\!\!\perp B \mid S$ for conditioning sets $S$ of increasing size.
+      \item Remove the edge $A - B$ if a separating set $S$ is found (i.e., $A$ and $B$ are independent given $S$).
+      \item Uses a stepwise approach, testing conditioning sets of size $k = 0, 1, 2, \dots$ until no more edges can be removed.
+    \end{itemize}
+\end{itemize}
+
+\textbf{2. Collider Orientation (Unshielded Triples)}
+\begin{itemize}
+  \item Identify unshielded triples $A - B - Z$ (where $A$ and $Z$ are not adjacent).
+  \item Orient $A \rightarrow B \leftarrow Z$ (a collider) if $B$ is \textbf{not} in the separating set of $A$ and $Z$.
+\end{itemize}
+
+\textbf{3. Possible-D-Sep Phase and Edge Orientation}
+\begin{itemize}
+  \item Possible-D-Sep Set: For each pair $A, B$, compute a superset of variables that could d-separate them in the presence of latent confounders.
+  \item \textbf{Additional Conditional Tests}: Re-test independence between $A$ and $B$ conditioned on subsets of their Possible-D-Sep sets.
+  \item Edge Orientation Rules:
+    \begin{itemize}
+      \item Apply 10 orientation rules (Appendix \ref{appendix:Meek_FCI}) to propagate edge directions while avoiding cycles.
+      \item Bidirected edges ($\leftrightarrow$) are added when latent confounding is inferred.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Example}
+\begin{enumerate}
+  \item Input: Data with variables $A, B, C, D$.
+  \item Skeleton: After testing, edges $A - B$ and $C - D$ are removed.
+  \item Colliders: Detect $A \rightarrow B \leftarrow C$ if $B$ is not in the separating set of $A$ and $C$.
+  \item PAG Output: $A \circ\!\!\rightarrow B \leftarrow\!\!\circ C$, $B \leftrightarrow D$ (indicating latent confounding between $B$ and $D$).
+\end{enumerate}
+
+
 
 \subsection{Advantages and Limitations}
-[Discuss strengths (e.g., handles latent confounding) and challenges (e.g., complexity, sensitivity to CI test errors).]
+\subsubsection*{Advantages}
+ handles latent confounding
+\subsubsection*{Limitations}
+complexity, sensitivity to CI test errors -> error propagation
 
-\subsection{Graph Type}
-[Explain that FCI estimates a Partial Ancestral Graph (PAG), allowing for bi-directed and circle-ended edges to account for hidden variables.]
+% \subsection{Graph Type}
+% [Explain that FCI estimates a Partial Ancestral Graph (PAG), allowing for bi-directed and circle-ended edges to account for hidden variables.]
 \end{document}

@@ -9,6 +9,8 @@
 \usepackage{appendix}
 \usepackage{subcaption}
 \usepackage{natbib}
+\usepackage{biblatex} %Imports biblatex package
+\addbibresource{sample.bib} %Import the bibliography file
 \usepackage{hyperref}
 \usepackage{geometry}
 \usepackage{float}
@@ -28,14 +30,14 @@
 \subfile{introduction}
 \subfile{data}
 \subfile{theory}
- \subfile{methodology}
- \subfile{implementation}
- \subfile{results}
- \subfile{discussion}
+\subfile{methodology}
+\subfile{implementation}
+\subfile{results}
+\subfile{discussion}
 \subfile{conclusion}
 
-\bibliographystyle{plainnat}
-\bibliography{references}
+% \bibliographystyle{plainnat}
+% \bibliography{references}
 
 \begin{appendices}
 \subfile{Report/final_report/appendix}
