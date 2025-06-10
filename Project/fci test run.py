@@ -41,6 +41,10 @@ def data_loader(retain: List[str], sex: bool = False, region: str = None) -> Uni
         data = data[data["region"] == region]
     print(data)
 
+    for col in retain:
+        if data[col].dtype == 'object' or pd.api.types.is_string_dtype(data[col]):
+            data[col] = data[col].astype('category').cat.codes
+
     if sex:
         if "sex" not in data.columns:
             raise ValueError("'sex' column not found in the dataset.")
@@ -62,10 +66,11 @@ def data_prep(data: pd.DataFrame, how: str = 'all') -> np.ndarray:
     :param how: 'any' to drop rows with at least one NaN, 'all' to drop rows where all entries are NaN
     :return: Clean numpy array
     '''
-    data_clean = data.dropna(how=how).fillna(0)
+    data_clean = data.dropna(how=how)
+    non_numerical_cols = data_clean.select_dtypes(exclude=['number']).columns.tolist()
 
     try:
-        data_clean = data_clean.astype(np.int32)
+        data_clean = data_clean.fillna(0).astype(np.int32)
     except ValueError:
         raise ValueError("Non-numeric columns detected. Please preprocess your data accordingly.")
 
@@ -167,6 +172,7 @@ def iterator_over_fci(retain, how : str = "all", verbose: bool  = False, region:
     if verbose:
         print("Printing out the status")
     data = data_loader(retain, region = region)
+    print(data.info())
     # data_fem, data_men = data_loader(retain, sex=True)
     data_preped = data_prep(data, "all")
     data_list = list(map(data_prep, [
@@ -202,7 +208,7 @@ def iterator_over_fci(retain, how : str = "all", verbose: bool  = False, region:
                     ci_test,
                     sign_level=alpha,
                     feature_names=retain,
-                    subscript = f'{gr}_{region}_{len(retain)}',
+                    subscript = f'{gr}_{region}_{len(retain)}_{retain[-1]}',
                     verbose = verbose
                 )
                 elapsed_time = time.time() - start_time
@@ -301,16 +307,67 @@ if __name__ == "__main__":
     retain = ["bulliedothers", "beenbullied",
               "cbulliedothers", "cbeenbullied",
               "fight12m",
-              "injured12m",
+              # "injured12m",
               "lifesat", "famhelp", "famsup", "famtalk",
               "famdec", "friendhelp", "friendcounton", "friendshare", "friendtalk",
               "likeschool", "schoolpressure", "studtogether", "studhelpful", "studaccept",
-              "teacheraccept", "teachercare", "teachertrust","timeexe", "talkfather", "talkstepfa", "talkmother", "talkstepmo",
-              "IRFAS"
+              "teacheraccept", "teachercare", "teachertrust","timeexe", "talkfather", "talkstepfa", "talkmother", "talkstepmo"
               ]
+    print(retain)
+    # retain = ["sex", "agecat",
+    #           # "IRFAS",
+    #           # "IRRELFAS_LMH",
+    #           # "IOTF4",
+    #
+    #           "emcsocmed1", "emcsocmed2", "emcsocmed3", "emcsocmed4", "emcsocmed5", "emcsocmed6", "emcsocmed7",
+    #           "emcsocmed8", "emcsocmed9", "likeschool", "schoolpressure", "studtogether", "studhelpful", "studaccept",
+    #           "teacheraccept", "teachercare", "teachertrust", "bulliedothers", "beenbullied", "cbulliedothers",
+    #           "cbeenbullied", "fight12m", "injured12m", "emconlfreq1", "emconlfreq2", "emconlfreq3", "emconlfreq4",
+    #           "emconlpref1", "emconlpref2", "emconlpref3", "friendhelp", "friendcounton", "friendshare", "friendtalk",
+    #           "famhelp", "famsup", "famtalk", "famdec",
+    #           "talkfather", "talkstepfa", "talkmother", "talkstepmo", "timeexe", "health", "lifesat", "headache",
+    #           "stomachache", "backache", "feellow", "irritable", "nervous",
+    #           "sleepdificulty", "dizzy", "thinkbody", "motherhome1", "fatherhome1", "stepmohome1", "stepfahome1",
+    #           "fosterhome1", "elsehome1_2",
+    #           "employfa", "employmo", "employnotfa", "employnotmo", "fasfamcar", "fasbedroom", "fascomputers",
+    #           "fasbathroom", "fasdishwash", "fasholidays", "physact60", "bodyweight", "bodyheight"]
+    #
 
+    new_retain = [
+    # Demographics & Metadata
+    "agecat", "sex",
+    # Family Affluence Scale
+    "fasfamcar", "fasbedroom", "fascomputers", "fasbathroom", "fasdishwash", "fasholidays",
+    # Health & Well-being
+    "health", "lifesat", "thinkbody", "headache", "stomachache", "backache", "feellow", "irritable", "nervous", "sleepdificulty", "dizzy",
+    # Health Behaviors
+    "physact60", "timeexe",
+    # Body Measures
+    "bodyweight", "bodyheight",
+    # School Experience
+    "likeschool", "schoolpressure", "studtogether", "studhelpful", "studaccept", "teacheraccept", "teachercare", "teachertrust",
+    # Violence and Bullying
+    "bulliedothers", "cbulliedothers", "fight12m", "injured12m", "beenbullied", "cbeenbullied",
+    # Peer Support
+    "friendhelp", "friendcounton", "friendshare", "friendtalk",
+    # Emotional Communication Preferences
+    "emconlfreq1", "emconlfreq2", "emconlfreq3", "emconlfreq4",
+    "emconlpref1", "emconlpref2", "emconlpref3",
+    "emcsocmed1", "emcsocmed2", "emcsocmed3", "emcsocmed4", "emcsocmed5", "emcsocmed6", "emcsocmed7", "emcsocmed8", "emcsocmed9",
+    # Migration Background
+    "countryborn", "countrybornmo", "countrybornfa",
+    # Household Composition
+    "motherhome1", "fatherhome1", "stepmohome1", "stepfahome1", "fosterhome1", "elsehome1_2",
+    # Parental Employment
+    "employfa", "employmo", "employnotfa", "employnotmo",
+    # Parent--Child Communication
+    "talkfather", "talkstepfa", "talkmother", "talkstepmo",
+    # Family Support
+    "famhelp", "famsup", "famtalk", "famdec"
+]
 
-    iterator_over_fci(retain, "any", False, region = "UA")
+    iterator_over_fci(retain, "all", False, region="UA")
+    iterator_over_fci(new_retain, "all", False, region = "UA")
     #iterator_over_fci(retain, how='any', verbose=False)
     # retain = [
     #     # "sex", "agecat", "IRFAS",
