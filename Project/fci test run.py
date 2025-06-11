@@ -80,11 +80,10 @@ def data_prep(data: pd.DataFrame, how: str = 'all') -> np.ndarray:
 
 
 test_map = {
-        #"chisq": chisq,
+        "chisq": chisq,
         "gsq": gsq,
         #"fisherz": fisherz,
         #"mv_fisherz": mv_fisherz,
-
         #"kci": kci
 }
 
@@ -186,12 +185,12 @@ def iterator_over_fci(retain, how : str = "all", verbose: bool  = False, region:
     # Prepare results DataFrame
     results = pd.DataFrame(columns=["CI test", "alpha", "time", "result"])
     significance_levels = [0.001,
-                           #0.005,
+                           0.005,
                            0.01,
-                           #0.025,
+                           0.025,
                            0.05,
-                           #0.075,
-                           #0.1
+                           0.075,
+                           0.1
                            ]
 
 
@@ -301,6 +300,130 @@ def run_fci_wrapper(args):
 #     df_to_tex(results, caption, label)
 #     return results
 
+import time
+import pandas as pd
+import matplotlib.pyplot as plt
+import itertools
+
+
+
+
+def plot_fci_runtimes(results, alpha_fixed=0.05, sample_size_fixed=2500):
+    """
+    Plots FCI runtime as a function of significance level and sample size for different CI tests.
+
+    Parameters:
+        results (pd.DataFrame): DataFrame with columns ["CI test", "alpha", "time", "sample size"].
+        alpha_fixed (float): Alpha level to fix when plotting runtime vs sample size.
+        sample_size_fixed (int): Sample size to fix when plotting runtime vs alpha.
+    """
+
+    # --- Plot 1: Runtime vs Significance Level (fixed sample size) ---
+    plt.figure(figsize=(10, 6))
+    for ci_test in results["CI test"].unique():
+        df_plot = results[(results["CI test"] == ci_test) &
+                          (results["sample size"] == sample_size_fixed)].sort_values("alpha")
+        plt.plot(df_plot["alpha"], df_plot["time"], marker='o', label=ci_test)
+
+    plt.xlabel("Significance Level (?)")
+    plt.ylabel("Computation Time (s)")
+    plt.title(f"FCI Runtime vs Significance Level (Sample Size = {sample_size_fixed})")
+    plt.legend(title="CI Test")
+    plt.grid(True)
+    plt.tight_layout()
+    name_alpha = "fci_runtime_vs_alpha"
+    caption_alpha = (
+        f"Computation time of the FCI algorithm across different significance levels ? "
+        f"for various conditional independence (CI) tests. Results are based on a fixed sample size of {sample_size_fixed} observations."
+    )
+    plt.savefig(f"{name_alpha}.png", dpi=300)
+    picture_to_tex(f"{name_alpha}.png", caption=caption_alpha, label=name_alpha)
+    plt.show()
+
+    # --- Plot 2: Runtime vs Sample Size (fixed alpha) ---
+    plt.figure(figsize=(10, 6))
+    for ci_test in results["CI test"].unique():
+        df_plot = results[(results["CI test"] == ci_test) &
+                          (results["alpha"] == alpha_fixed)].sort_values("sample size")
+        plt.plot(df_plot["sample size"], df_plot["time"], marker='o', label=ci_test)
+
+    plt.xlabel("Sample Size")
+    plt.ylabel("Computation Time (s)")
+    plt.title(f"FCI Runtime vs Sample Size (Significance Level = {alpha_fixed})")
+    plt.legend(title="CI Test")
+    plt.grid(True)
+    plt.tight_layout()
+    name_size = "fci_runtime_vs_samplesize"
+    caption_size = (
+        f"Computation time of the FCI algorithm as a function of sample size for different CI tests. "
+        f"The significance level ? is fixed at {alpha_fixed} to isolate the effect of increasing data volume on performance."
+    )
+    plt.savefig(f"{name_size}.png", dpi=300)
+    picture_to_tex(f"{name_size}.png", caption=caption_size, label=name_size)
+    plt.show()
+
+
+@timeit
+def time_over_fci(retain, how: str = "all", verbose: bool = False, region: str = "UA"):
+    """
+    Runs the FCI algorithm for each CI test and significance level, recording execution time and results.
+    Also plots computation time as a function of significance level (alpha).
+
+    Parameters:
+        retain (list): List of feature names to retain for analysis.
+
+    Returns:
+        pd.DataFrame: DataFrame with columns ["CI test", "alpha", "time", "result"] summarizing the runs.
+    """
+    if verbose:
+        print("Loading and preprocessing data...")
+    data = data_loader(retain, region=region)
+    data_preped = data_prep(data, "all")
+    data_list = list(map(data_prep, [data], itertools.repeat(how)))
+    groups = ["all"]
+    data_dictionary = dict(zip(groups, data_list))
+
+    results = pd.DataFrame(columns=["CI test", "alpha", "time", "sample size"])
+    significance_levels = [0.001, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1]
+
+    # Store timing for plotting
+    time_records = {ci_test: [] for ci_test in test_map.keys()}
+
+    for gr in data_dictionary:
+        for ci_test in test_map.keys():
+            for alpha in significance_levels:
+                for size in range(250, 3000, 250):
+                    print(f"Running FCI with {ci_test} at alpha={alpha}")
+                    start_time = time.time()
+                    np.random.seed(42)
+                    indices = np.random.choice(data_dictionary[gr].shape[0], size=size, replace=False)
+                    fci_data = data_dictionary[gr][indices]
+                    label = run_fci(
+                        fci_data,
+                        test_map,
+                        ci_test,
+                        sign_level=alpha,
+                        feature_names=retain,
+                        subscript=f'_for time experiment',
+                        verbose=verbose
+                    )
+                    elapsed_time = time.time() - start_time
+                    ref = f"\\ref{{fig:{label}}}"
+                    results.loc[len(results)] = [ci_test, alpha, elapsed_time, size]
+                    time_records[ci_test].append(elapsed_time)
+
+    # Save table as LaTeX
+    label = f"fci_parameters_time_experiments"
+    [length] = list(map(len, data_list))
+    caption = (
+        f'Summary of execution times for the FCI algorithm across varying sample sizes, conditional independence (CI) tests, and significance levels (\(\alpha\)). Each row corresponds to a unique combination of parameters used to run the algorithm. The results illustrate how computational time is affected by different test types, confidence thresholds, and data sizes.'
+    )
+    df_to_tex(results, caption=caption, label=label)
+
+    plot_fci_runtimes(results)
+
+    return results
+
 
 
 if __name__ == "__main__":
@@ -311,7 +434,7 @@ if __name__ == "__main__":
               "lifesat", "famhelp", "famsup", "famtalk",
               "famdec", "friendhelp", "friendcounton", "friendshare", "friendtalk",
               "likeschool", "schoolpressure", "studtogether", "studhelpful", "studaccept",
-              "teacheraccept", "teachercare", "teachertrust","timeexe", "talkfather", "talkstepfa", "talkmother", "talkstepmo"
+              "teacheraccept", "teachercare", "teachertrust","timeexe", "talkfather", "talkstepfa", "talkstepmo", "talkmother"
               ]
     print(retain)
     # retain = ["sex", "agecat",
@@ -366,8 +489,8 @@ if __name__ == "__main__":
     "famhelp", "famsup", "famtalk", "famdec"
 ]
 
-    iterator_over_fci(retain, "all", False, region="UA")
-    iterator_over_fci(new_retain, "all", False, region = "UA")
+    time_over_fci(retain, "all", False, region="UA")
+    # iterator_over_fci(new_retain, "all", False, region = "UA")
     #iterator_over_fci(retain, how='any', verbose=False)
     # retain = [
     #     # "sex", "agecat", "IRFAS",
