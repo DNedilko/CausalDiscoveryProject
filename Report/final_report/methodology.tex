@@ -1,22 +1,21 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
 \section{Methodology}
-For this report, we have decided to focus on constraint-based algorithms, namely Fast Causal Inference (FCI). Constraint-based algorithms like FCI use $G^2$ conditional independence test to construct causal graphs under core assumptions. The assumptions ensure that statistical independence accurately reflects the actual absence of causation. FCI is particularly valuable for addressing latent confounding and selection bias, which can be a challenge in observational datasets, in our case HBSC surveys. It is a global search algorithm, meaning that it uncovers a full relationship graph between variables specified in the dataset. 
+For this report, we have decided to focus on constraint-based algorithms, namely Fast Causal Inference (FCI). Constraint-based algorithms like FCI use conditional independence testing to construct causal graphs under core assumptions. The assumptions ensure that statistical independence accurately reflects the actual absence of causation. FCI is particularly valuable for addressing latent confounding and selection bias, which can be a challenge in observational datasets. It is a global search algorithm, meaning that it uncovers a full relationship graph between variables specified in the dataset. 
 \subsection{Assumptions}
-\subsubsection*{Causal insufficiency}
-This assumption is required to perform FCI. The opposite of it, causal sufficiency, is a pillar of Causal Discovery. This assumption allows FCI to account for latent confounding. 
-\subsubsection*{Faithfulness}
-One of the key assumptions that is 
 
-\subsubsection*{CI tests suitability and correctness}
+\textbf{Causal Markov}
 
-\subsection{Key Concepts}
+\textbf{Causal insufficiency}
 
-\textbf{d-separation}
+\textbf{Faithfulness} 
 
-\textbf{Colliders}
+\textbf{CI tests suitability and correctness}
+\subsection{FCI}
 
-\subsection{Conditional Independence tests}
+\subsection{m-separations(given the oracle)}
+
+\subsection{Conditional Independence tests(learning from data)}
 CI tests check whether nodes $A$ and $Y$ are conditionally independent given a conditioning set of nodes $S = \{s_1, \dots, s_d\}$, where $d$ is the number of nodes in the conditioning set. In other words, the test decides whether $S$ is a Sepset (separating set) for $A$ and $Y$ in the learnt graph. If $S = \emptyset$, then we are testing for marginal independence between $A$ and $Y$. The tests operate using a significance level $\alpha$, which is an arbitrary threshold that determines whether the observed (in)dependence is statistically significant. It's worth noting that while these tests are generally referred to as CI tests, they are also used for checking unconditional independence when $S = \emptyset$. However, they only reflect the conditional independencies present in the dataset, which might not fully match those in the true underlying distribution. These tests can make errors, especially with smaller sample sizes. Mistakes early in the discovery process, like wrongly removing an edge due to a false detection of independence, can lead to incorrect graph structures later on. 
 \subsubsection*{Statistical CI tests for discrete data}
 The most commonly used conditional independence (CI) tests for discrete data are the $ G^2 $ and $ \chi^2 $ statistical tests. Both tests assume a null hypothesis stating that variables A and Y are conditionally independent given a set of variables denoted as S. These tests produce a statistic represented by a p-value, which indicates the likelihood of observing the data under the null hypothesis. If the p-value is below a predefined significance level $ \alpha $, the null hypothesis is rejected, leading to the conclusion that A and Y are conditionally dependent.
@@ -45,7 +44,7 @@ is, every possible combination of values is present in the data. If it is not, w
 \textbf{$ \chi^2 $ Test} is similar to $G^2$, but define as:
 \[\chi ^2 = 2 \cdot \sum \frac{(Observed - Expected)^2}{Expected}\]
 
-\textbf{Computation time} for each CI tests is different. 
+\textbf{Computation time} for each CI tests is different. DONT FORGET TO COMPARE COMPUTATION TIMEEEEEE
 
 
 \subsection{Algorithm Description}
