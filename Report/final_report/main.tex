@@ -7,8 +7,14 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{appendix}
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{subcaption}
-\usepackage{natbib}
+\newcommand{\indep}{\perp\!\!\!\!\perp} 
+% \usepackage{natbib}
+\usepackage{listings}
+\usepackage{biblatex}
+\addbibresource{references.bib} 
 \usepackage{hyperref}
 \usepackage{geometry}
 \usepackage{float}
@@ -27,16 +33,15 @@
 
 \subfile{introduction}
 \subfile{data}
-\subfile{theory}
- \subfile{methodology}
- \subfile{implementation}
- \subfile{results}
- \subfile{discussion}
+% \subfile{theory}
+\subfile{methodology}
+\subfile{implementation}
+\subfile{results}
+\subfile{discussion}
 \subfile{conclusion}
 
-\bibliographystyle{plainnat}
-\bibliography{references}
-
+% \bibliographystyle{plainnat}
+\bibliography{Report/final_report/references}
 \begin{appendices}
 \subfile{Report/final_report/appendix}
 \end{appendices}
