@@ -80,8 +80,8 @@ def data_prep(data: pd.DataFrame, how: str = 'all') -> np.ndarray:
 
 
 test_map = {
-        "chisq": chisq,
-        "gsq": gsq,
+        #"chisq": chisq,
+         "gsq": gsq,
         #"fisherz": fisherz,
         #"mv_fisherz": mv_fisherz,
         #"kci": kci
@@ -184,12 +184,13 @@ def iterator_over_fci(retain, how : str = "all", verbose: bool  = False, region:
     data_dictionary = dict(zip(groups, data_list))
     # Prepare results DataFrame
     results = pd.DataFrame(columns=["CI test", "alpha", "time", "result"])
-    significance_levels = [0.001,
-                           0.005,
-                           0.01,
-                           0.025,
-                           0.05,
-                           0.075,
+    significance_levels = [
+                           #  0.001,
+                           # # 0.005,
+                           # 0.01,
+                           # # 0.025,
+                           # 0.05,
+                           # 0.075,
                            0.1
                            ]
 
@@ -486,11 +487,11 @@ if __name__ == "__main__":
     # Parent--Child Communication
     "talkfather", "talkstepfa", "talkmother", "talkstepmo",
     # Family Support
-    "famhelp", "famsup", "famtalk", "famdec"
+    "famhelp", "famsup", "famdec","famtalk",
 ]
 
-    time_over_fci(retain, "all", False, region="UA")
-    # iterator_over_fci(new_retain, "all", False, region = "UA")
+    iterator_over_fci(retain, "all", False, region="UA")
+    iterator_over_fci(new_retain, "all", False, region = "UA")
     #iterator_over_fci(retain, how='any', verbose=False)
     # retain = [
     #     # "sex", "agecat", "IRFAS",
