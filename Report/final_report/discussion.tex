@@ -1,12 +1,31 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
 \section{Discussion}
+\subsubsection*{Interpretability of Results}
+The causal pathways discovered in this study largely align with existing literature on adolescent behavior. The role of parental communication as a precursor to peer trust and emotional well-being supports findings from developmental psychology. Similarly, the link between academic stress and experiences of bullying adds empirical support to concerns about school pressure environments.
 
+\subsubsection*{Limitations of Observational Data}
+Due to the observational nature of the HBSC dataset, it is important to acknowledge that the results cannot establish definitive causality. All conclusions depend on the assumption that the observed conditional independencies reflect true causal mechanisms. Additionally, self-reported responses may introduce biases such as social desirability or recall inaccuracy.
+
+\subsubsection*{Validity of Assumptions}
+The success of the FCI algorithm relies heavily on assumptions like the Causal Markov Condition and Faithfulness. While these are reasonable in theory, their validity in complex human behavior is debatable. However, the large sample size ($n=6660$) does support the statistical power of conditional independence tests.
+
+\subsubsection*{Influence of Latent Variables}
+Bidirected edges observed in the PAGs point to latent confounding factors, such as individual personality traits, school-wide culture, or social media habits, which are not directly captured by the dataset. These confounders may influence both behavioral patterns and social relationships and should be further investigated in follow-up studies or through extended data collection.
+
+\subsubsection*{Impact of Conditional Independence Tests and Significance Levels}
+The choice of CI test and significance level $\alpha$ had a noticeable impact on both the structure of the learned graphs and computational performance. In our experiments, the G$^2$ test consistently outperformed the $\chi^2$ test in terms of runtime, especially as the number of variables increased. This likely stems from the G$^2$ test's more efficient handling of sparse contingency tables and its logarithmic formulation.
+
+Interestingly, the $\chi^2$ test resulted in denser graphs than the G$^2$ test at the same significance level. This suggests that $\chi^2$ may be more permissive in rejecting the null hypothesis of conditional independence, thereby retaining more edges. While this may help uncover weak or borderline dependencies, it also increases the risk of false positives and reduced interpretability of the causal structure.
+
+The significance level $\alpha$ controls the threshold for rejecting independence. Lower values (e.g., $\alpha = 0.001$) lead to more conservative models with fewer edges, which ensures that only the most statistically robust relationships are retained. Higher values (e.g., $\alpha = 0.05$) produce denser graphs but risk overfitting to noise. We found that $\alpha = 0.01$ often offered a reasonable compromise, especially when combined with the G$^2$ test, resulting in stable and interpretable structures without excessive complexity.
+
+\textcolor{teal}{
 \begin{itemize}
     \item Are the discovered causal paths meaningful and interpretable?
     \item What are the limitations of this approach given the observational nature of HBSC?
     \item Are the assumptions of the FCI algorithm likely to hold in this case?
     \item Could latent variables (e.g., personality traits) explain some of the results?
-\end{itemize}
+\end{itemize}}
 
 \end{document}

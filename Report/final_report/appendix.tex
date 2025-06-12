@@ -41,7 +41,7 @@
 & \text{such that } Z \text{ and } Y \text{ are not adjacent, then orient } X \circ\!\!-\!\!Z \text{ as } X \rightarrow Z. \\[1em]
 \mathcal{R}10: \quad & \text{Suppose } X \circ\!\!-\!\!Z,\, Y \rightarrow Z \leftarrow K,\, p_1 \text{ is an uncovered p.d. path from } X \text{ to } Y, \\
 & \text{and } p_2 \text{ is an uncovered p.d. path from } X \text{ to } K. \\
-& \text{Let } M \text{ be the vertex adjacent to } X \text{ on } p_1\, (M \text{ could be } Y), \text{ and } A \text{ be the vertex adjacent to } X \text{ on } p_2\, (A \text{ could be } K). \\
+& \text{Let } M \text{ be the vertex adjacent to }X \\ & \text{ on } p_1\, (M \text{ could be } Y), \text{ and } A \text{ be the vertex adjacent to } X \text{ on } p_2\, (A \text{ could be } K). \\
 & \text{If } M \text{ and } A \text{ are distinct, and are not adjacent, then orient } X \circ\!\!-\!\!Z \text{ as } X \rightarrow Z.
 \end{align*}
 
@@ -50,49 +50,26 @@ Here, all nodes \( X, Y, Z, M, K, A \in \mathbf{V} \), the set of nodes in the g
 \(\mathcal{R}0\)-\(\mathcal{R}3\) are the inference rules for learning DAGs. \(\mathcal{R}4\) is specific to MAGs with bidirected edges. \(\mathcal{R}5\)-\(\mathcal{R}6\) are irrelevant if the true causal MAG does not contain undirected edges (e.g., no selection bias). \(\mathcal{R}7\) might not be triggered because none of \(\mathcal{R}0\)-\(\mathcal{R}4\) and \(\mathcal{R}8\)-\(\mathcal{R}10\) lead to \( -\!\!\circ \). \(\mathcal{R}8\)-\(\mathcal{R}10\) help convert partially directed edges into directed ones, and together they render an Augmented FCI.
 
 
-\section{Python causal-learn FCI example}
-\label{appendix: python_fci_clean}
-\begin{lstlisting}[language=Python]
-import numpy as np
-import pandas as pd
-from causallearn.search.ConstraintBased.FCI import fci
-from causallearn.utils.cit import  gsq
-from causallearn.utils.GraphUtils import GraphUtils
+% \section{Python causal-learn FCI example}
+% \label{appendix: python_fci_clean}
 
-test_map = {
-        "fisherz": fisherz,
-        "mv_fisherz": mv_fisherz,
-        "gsq": gsq,
-        "chi2": chi2,
-        "kci": kci
-    }
-
-
-def run_fci(
-    data: pd.DataFrame,
-    test: str = "gsq",
-    alpha: float = 0.05,
-    output_dir: str = "graphs"
-) -> tuple:
-    
-    data_array = data.values.astype(np.float32)
-
-    # Run FCI with specified parameters
-    graph, edges = fci(
-        dataset=data_array,
-        independence_test_method=test_map[test],
-        alpha=alpha,
-        verbose=True
-    )
-
-    # Generate visualization
-    GraphUtils.to_pydot(graph, labels=data.columns.tolist())
-            .write_png(
-                os.path.join(output_dir, filename)            )
-    return graph, edges
-\end{lstlisting}
 
 \section{Python causal-learn FCI }
 \label{appendix: python_fci_clean}
+
+
+\section{Graphs for 78 variables at significance levels 0.01, 0.001 and 0.05}
+\label{appendix: 78_fci_pictures}
+\begin{landscape}
+\input{Report/final_report/pictures/fci_gsq_0.001all_UA_78_famdec}
+\end{landscape}
+
+\begin{landscape}
+\input{Report/final_report/pictures/fci_gsq_0.01all_UA_78_famdec}
+\end{landscape}
+
+\begin{landscape}
+\input{Report/final_report/pictures/fci_gsq_0.05all_UA_78_famdec}
+\end{landscape}
 
 \end{document}
