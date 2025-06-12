@@ -1,26 +1,51 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
 \section{Methodology}
-For this report, we have decided to focus on constraint-based algorithms, namely Fast Causal Inference (FCI). Constraint-based algorithms like FCI use conditional independence testing to construct causal graphs under core assumptions. The assumptions ensure that statistical independence accurately reflects the actual absence of causation. FCI is particularly valuable for addressing latent confounding and selection bias, which can be a challenge in observational datasets. It is a global search algorithm, meaning that it uncovers a full relationship graph between variables specified in the dataset. 
+For this report, we focus on constraint-based algorithms, namely Fast Causal Inference (FCI). The constraint-based approach to causal discovery employs conditional independence testing or m-separation constraints to recover features of the causal MAG. For the results to be valid, a set of assumptions must hold to ensure that statistical independence reflects the actual absence of causation. FCI is a global search algorithm, meaning it uncovers the full relationship graph between variables in the dataset.
 \subsection{Assumptions}
+\begin{itemize}
+    \item \textbf{A1. Causal Markov Condition} \\
+    For any variable \( X \), given its direct causes \( \text{PA}_X \), \( X \) is conditionally independent of its non-descendants:
+    \[
+    X \perp\!\!\!\perp_{G} \text{ND}_X \mid \text{PA}_X
+    \]
 
-\textbf{Causal Markov}
+    \item \textbf{A2. Relaxed Causal Sufficiency} \\
+    Not all common causes (confounders) are observed. Latent variables \( L \) may induce dependencies such that:
+    \[
+    X \not\!\perp\!\!\!\perp Y \mid Z \quad \text{even if} \quad X \perp\!\!\!\perp Y \mid Z, L
+    \]
 
-\textbf{Causal insufficiency}
+    \item \textbf{A3. Faithfulness} \\
+    All and only the conditional independencies observed in the data correspond to d-separations in the true causal graph:
+    \[
+    X \perp\!\!\!\perp Y \mid Z \Rightarrow X \text{ and } Y \text{ are d-separated by } Z \text{ in the graph}
+    \]
 
-\textbf{Faithfulness} 
+    \item \textbf{A4. CI Tests Suitability and Correctness} \\
+    The CI tests or the oracle used must reliably detect:
+    \[
+    X \perp\!\!\!\perp Y \mid Z
+    \]
+    with high statistical power and controlled Type I error based on the sample data.
+\end{itemize}
 
-\textbf{CI tests suitability and correctness}
-\subsection{FCI}
 
-\subsection{m-separations(given the oracle)}
+\subsection{Fast Causal Inference}
+The algorithm consists primarily of two stages. In the first stage, it identifies the adjacencies in the causal MAG. The inference of these adjacencies is based on the principle that two variables are adjacent in a MAG if and only if they are not m-separated by any set of other variables in the graph. Essentially, the algorithm searches for every pair of variables to find a set of other variables that makes them conditionally independent. They are not considered adjacent if such a set is found. If all assumptions are fulfilled, the FCI algorithm successfully determines the correct adjacencies.
 
-\subsection{Conditional Independence tests(learning from data)}
-CI tests check whether nodes $A$ and $Y$ are conditionally independent given a conditioning set of nodes $S = \{s_1, \dots, s_d\}$, where $d$ is the number of nodes in the conditioning set. In other words, the test decides whether $S$ is a Sepset (separating set) for $A$ and $Y$ in the learnt graph. If $S = \emptyset$, then we are testing for marginal independence between $A$ and $Y$. The tests operate using a significance level $\alpha$, which is an arbitrary threshold that determines whether the observed (in)dependence is statistically significant. It's worth noting that while these tests are generally referred to as CI tests, they are also used for checking unconditional independence when $S = \emptyset$. However, they only reflect the conditional independencies present in the dataset, which might not fully match those in the true underlying distribution. These tests can make errors, especially with smaller sample sizes. Mistakes early in the discovery process, like wrongly removing an edge due to a false detection of independence, can lead to incorrect graph structures later on. 
-\subsubsection*{Statistical CI tests for discrete data}
-The most commonly used conditional independence (CI) tests for discrete data are the $ G^2 $ and $ \chi^2 $ statistical tests. Both tests assume a null hypothesis stating that variables A and Y are conditionally independent given a set of variables denoted as S. These tests produce a statistic represented by a p-value, which indicates the likelihood of observing the data under the null hypothesis. If the p-value is below a predefined significance level $ \alpha $, the null hypothesis is rejected, leading to the conclusion that A and Y are conditionally dependent.
+The second stage involves inferring edge marks. During this stage, the algorithm applies a series of orientation rules (as referenced in \cite{ZHANG20081873}) to introduce arrowheads or tails, with circles ($\circ$) representing undetermined edge marks. The final output of the algorithm is PAG, which means the Markov equivalence class as determined by the oracle of conditional independence.
 
-The general form of the \textbf{$ G^2 $ Test} statistic is as follows:
+\subsection{Conditional Independence tests}
+Having clear m-separation statements would require an oracle capable of providing the correct conditional independence information. In practice, CI tests are used to approximate m-separation statements, which describe a MAG. These tests determine weather \( X \) and \( Y \) are conditionally independent given a conditioning set \( S = \{s_1, \dots, s_d\} \), where \( d \) is the number of nodes in the set. In other words, the test checks whether \( S \) serves as a separating set (Sepset) for \( X \) and \( Y \) in the learned graph. If \( S = \emptyset \), the test is for marginal independence between \( X \) and \( Y \).
+
+CI tests operate using a significance level \( \alpha \), which is an arbitrary threshold determining whether the observed (in)dependence is statistically significant. While typically referred to as CI tests, they are also used for unconditional independence when \( S = \emptyset \). However, they only reflect the conditional independencies present in the observed data, which may not perfectly align with those in the true underlying causal structure. These tests are prone to errors, particularly with small sample sizes. Mistakes made early in the discovery process, such as incorrectly removing an edge due to a false detection of independence, can result in incorrect graph structures later.
+
+\subsubsection*{Statistical CI Tests for Discrete Data}
+
+The most commonly used conditional independence (CI) tests for discrete data are the \( G^2 \) and \( \chi^2 \) statistical tests. Both assume a null hypothesis stating that variables \( A \) and \( Y \) are conditionally independent given a set of variables \( S \). These tests yield a statistic in the form of a p-value, indicating the probability of observing the data under the null hypothesis. If the p-value falls below the chosen significance level \( \alpha \), the null hypothesis is rejected, suggesting that \( A \) and \( Y \) are conditionally dependent.
+
+The general form of the $ G^2 $ Test statistic( likelihood-ratio test statistic) is as follows:
 
 \[
 G^2 = 2 \cdot \sum \text{Observed} \cdot \ln \left( \frac{\text{Observed}}{\text{Expected}} \right)
@@ -29,85 +54,105 @@ G^2 = 2 \cdot \sum \text{Observed} \cdot \ln \left( \frac{\text{Observed}}{\text
 When conditioning on S, the observed and expected values are defined as:
 
 \[
-\text{Observed} = N_{\text{obs}} \quad \text{and} \quad \text{Expected} = \frac{N_{\text{bs}} \cdot N_{\text{as}}}{N_s}
+\text{Observed} = N_{\text{obs}} \quad \text{and} \quad \text{Expected} = \frac{N_{\text{ys}} \cdot N_{\text{xs}}}{N_s}
 \]
 
 Thus, the $ G^2 $ statistic can be expressed as:
 
 \[
-G^2 = 2 \cdot \sum_{a,b,s} N_{\text{abs}} \ln \left( \frac{N_{\text{abs}} N_s}{N_{\text{bs}} N_{\text{as}}} \right)
+G^2 = 2 \cdot \sum_{x,y,s} N_{\text{xys}} \ln \left( \frac{N_{\text{xys}} N_s}{N_{\text{xs}} N_{\text{ys}}} \right)
 \]
 
-Here, $ x $ and $ y $ range over the values of variables X and Y, while $ s $ covers all combinations of values within the set S. In this context, $ N $ represents the size of the corresponding subset. The p-value is calculated under the assumption that none of the values $ N_{\text{xys}} $ is zero, meaning that every possible combination of values is present in the data. If any combination has $ N_{\text{xys}} $ equal to zero, we heuristically reduce the degrees of freedom (df) for the p-value for each such combination.is calculated under the assumption that none of the values $N_{xys}$ is zero. That 
-is, every possible combination of values is present in the data. If it is not, we heuristically reduce $df$ for p-value for every combination of values $N_{xys}$ is zero.
+Here, $ x $ and $ y $ range over the values of variables X and Y, while $ s $ covers all combinations of values within the set S. In this context, $ N $ represents the size of the corresponding subset. The p-value is calculated under the assumption that none of the values $ N_{\text{xys}} $ is zero, meaning that every possible combination of values is present in the data. If any combination has $ N_{\text{xys}} $ equal to zero, we heuristically reduce the degrees of freedom (df) for the p-value for each such combination. It is calculated under the assumption that none of the values $N_{xys}$ is zero. 
+% That 
+% is, every possible combination of values is present in the data. If it is not, we heuristically reduce $df$ for p-value for every combination of values $N_{xys}$ is zero.
 
 \textbf{$ \chi^2 $ Test} is similar to $G^2$, but define as:
 \[\chi ^2 = 2 \cdot \sum \frac{(Observed - Expected)^2}{Expected}\]
 
-\textbf{Computation time} for each CI tests is different. DONT FORGET TO COMPARE COMPUTATION TIMEEEEEE
-
+The tests are asymptotically equivalent and converge similarly for small datasets.
 
 \subsection{Algorithm Description}
 \subsubsection{Input}
-The algorithm takes as input three components: a dataset, a conditional independence test and a significance level $\alpha$ for the CI tests. Observational data must have variables of interest. The data can be continuous, discrete, or mixed.
-Significance Level($\alpha$): Typically 0.05, to determine whether to reject the null hypothesis of independence.
+The algorithm takes as input three components: a dataset, a conditional independence test and a significance level $\alpha$ for the CI tests. The dataset should include the variables of interest. The data can be continuous, discrete, or mixed.
+Significance level($\alpha$): Typically 0.05, to determine whether to reject the null hypothesis of independence.
 
 \subsubsection{Output}
-The algorithm outputs Partial Ancestral Graphs (PAGs). A PAG represents a class of causal graphs (e.g., all DAGs or maximal ancestral graphs) consistent with the observed conditional independencies. PAG are using the following notation:
+The algorithm outputs Partial Ancestral Graphs (PAGs). PAG are using the following notation:
 \begin{itemize}
         \item \textbf{Directed edge} ($X \rightarrow Y$): Possible direct causation from $X$ to $Y$. In graph theory, $X$ is a parent or ancestor of $Y$
         \item \textbf{Bidirected edge} ($X \leftrightarrow Y$): Indicates that there is a latent confounder between $X$ and $Y$. X and Y are neither ancestors nor descendants of each other.
-        \item \textbf{Undirected edge} ($X - Y$): Indicates that there is a relation $X$ and $Y$, but we cannot conclude the causal direction of it. X and Y are both ancestors and descendants of each other.
+        \item \textbf{Undirected edge} ($X - Y$): Indicates association without orientation. No causal direction is implied. X and Y are both ancestors and descendants of each other. 
         \item \textbf{Circle endpoint} ($X \circ\!\!-\!\!\circ Y$, $X \circ\!\!\rightarrow Y$): Represents uncertainty about the direction or presence of latent variables. The circle ($\circ$) denotes ambiguity in orientation.
     \end{itemize}
     
-\subsubsection{Algorithm Workflow}
-FCI proceeds in three phases:
-
-\textbf{1. Skeleton Construction}
-\begin{itemize}
-  \item Initialization: Start with a fully connected complete undirected graph that has $\circ\!\!-\!\!\circ$ edge between every pair of variables.
-  \item Edge Removal: For each pair of variables $X$ and $Y$:
-    \begin{itemize}
-      \item Test conditional independence $X \perp\!\!\!\perp Y \mid S$ for conditioning sets $S$ of increasing size.
-      \item Remove the edge $X - Y$ if a separating set $S$ is found (i.e., $X$ and $Y$ are independent given $S$) and add save the separating set $S$ as Sepset(X, Y). 
-      \item This phase uses a stepwise approach, testing conditioning sets of size $k = 0, 1, 2, \dots$ until no more edges can be removed.
-    \end{itemize}
-\end{itemize}
-
-\textbf{2. Collider Orientation (Unshielded Triples) or $\mathcal{R}0$ (Appendix \ref{appendix:Meek_FCI})}
-\begin{itemize}
-  \item Identify unshielded triples $X - Y - Z$ (where $X$ and $Z$ are not adjacent).
-  \item Orient $X \rightarrow Y \leftarrow Z$ (a collider) if and only if $Y$ is \textbf{not} in the separating set of $X$ and $Z$.
-\end{itemize}
-
-\textbf{3. Possible-D-Sep Phase and Edge Orientation}
-\begin{itemize}
-  \item Possible-D-Sep Set: For each pair $X, Y$, compute a superset of variables that could d-separate them in the presence of latent confounders.
-  \item \textbf{Additional Conditional Tests}: Re-test independence between $X$ and $Y$ conditioned on subsets of their Possible-D-Sep sets.
-  \item Edge Orientation Rules:
-    \begin{itemize}
-      \item Apply orientation rules (Appendix \ref{appendix:Meek_FCI}) to propagate edge directions. Apply the rules until none of them can be applied.
-      \item Bidirected edges ($\leftrightarrow$) are added when latent confounding is inferred.
-    \end{itemize}
-\end{itemize}
-
-\textbf{Example}
+\subsubsection{Algorithm Workflow} \label{sec3:fci_algo_flo}
 \begin{enumerate}
-  \item Input: Data with variables $X, Y, C, D$.
-  \item Skeleton: After testing, edges $X - Y$ and $C - D$ are removed.
-  \item Colliders: Detect $X \rightarrow Y \leftarrow C$ if $Y$ is not in the separating set of $X$ and $C$.
-  \item PAG Output: $X \circ\!\!\rightarrow Y \leftarrow\!\!\circ C$, $Y \leftrightarrow D$ (indicating latent confounding between $Y$ and $D$).
+    \item Skeleton Construction
+        \begin{itemize}
+          \item Initialization: Start with a fully connected complete undirected graph that has $\circ\!\!-\!\!\circ$ edge between every pair of variables.
+          \item Edge Removal: For each pair of variables $X$ and $Y$:
+            \begin{itemize}
+              \item Test conditional independence $X \perp\!\!\!\perp Y \mid S$ for conditioning sets $\textbf{S}$ of increasing size.
+              \item Remove the edge $X - Y$ if a separating set $S$ is found ($X$ and $Y$ are independent given $\textbf{S}$) and add save the separating set $\textbf{S}$ as Sepset(X, Y). 
+              \item This phase uses a stepwise approach, testing conditioning sets $\mathbf{S}$ of increasing size $k = 0, 1, 2, \dots$ until no more edges can be removed. 
+            \end{itemize}
+        \end{itemize}
+    \item Collider Orientation (Unshielded Triples) or $\mathcal{R}0$ (Appendix \ref{appendix:Meek_FCI})
+
+        \begin{itemize}
+            \item Identify unshielded triples $X - Y - Z$ (where $X$ and $Z$ are not adjacent).
+            \item Orient $X \rightarrow Y \leftarrow Z$ (a collider) if and only if $Y$ is \textbf{not} in the separating set of $X$ and $Z$.
+        \end{itemize}
+    \item Possible-D-Sep Phase and Edge Orientation
+    \begin{itemize}
+          \item Possible-D-Sep Set: For each pair $X, Y$, compute a superset of variables that could d-separate them in the presence of latent confounders.
+          \item Additional Conditional Tests: Re-test independence between $X$ and $Y$ conditioned on subsets of their Possible-D-Sep sets.
+          \item Edge Orientation Rules:
+            \begin{itemize}
+              \item Apply orientation rules $\mathcal{R}1-4$(Appendix \ref{appendix:Meek_FCI}) to propagate edge directions. Apply the rules until none of them can be applied.
+              \item Bidirected edges ($\leftrightarrow$) are added when latent confounding is inferred.
+            \end{itemize}
+        \end{itemize}
 \end{enumerate}
+FCI is said to be sound and complete when all assumptions are fulfilled.
+
+\subsubsection{Example}
+
+\begin{enumerate}
+  \item Input:
+  Observational data on variables \( X, Y, C, D \). Latent confounders and selection bias may be present.
+
+  \item Skeleton: 
+  Conditional independence tests remove edges:  
+  \( X \perp\!\!\!\perp Y \Rightarrow \) remove \( X - Y \)  
+  \( C \perp\!\!\!\perp D \,|\, Y \Rightarrow \) remove \( C - D \)
+
+  \item Collider Detection:
+  Triple \( X - Y - C \): if \( Y \notin \text{Sep}(X, C) \), orient as collider:  
+  \[
+    X \rightarrow Y \leftarrow C
+  \]
+
+  \item Latent Confounding: 
+  \( Y \not\!\perp\!\!\!\perp D \) under all conditions $\Rightarrow$ hidden confounder $\Rightarrow$
+  \[
+    Y \leftrightarrow D
+  \]
+
+  \item PAG Output: 
+  \[
+    X \circ\!\!\rightarrow Y \leftarrow\!\!\circ C,\quad Y \leftrightarrow D
+  \]
+\end{enumerate}
+
 
 
 
 \subsection{Advantages and Limitations}
 \subsubsection*{Advantages}
- handles latent confounding
-\subsubsection*{Limitations}
-complexity, sensitivity to CI test errors -> error propagation
+One key advantage of the FCI algorithm is its ability to handle latent confounding, because FCI does not assume causal sufficiency. This makes it more suitable for real-world data where unmeasured (latent) variables may influence the observed relationships. Additionally, FCI generates a PAG, which offers a more nuanced view of causal structures compared to the CPDAG produced by PC. Furthermore, the equivalence classes are consistent with the observed conditional independencies that may involve latent variables and potential selection bias.
 
-% \subsection{Graph Type}
-% [Explain that FCI estimates a Partial Ancestral Graph (PAG), allowing for bi-directed and circle-ended edges to account for hidden variables.]
+\subsubsection*{Limitations}
+A significant limitation of the FCI algorithm is its computational complexity, particularly for datasets with a large number of variables. The CI tests required at each step scale poorly, and exhaustive testing can be computationally intensive. Furthermore, the algorithm is sensitive to errors in CI tests. Inaccuracies in CI testing due to small sample sizes, noise, or incorrect test choice can lead to incorrect edge removals or orientations. These mistakes may propagate through the algorithm and render inaccurate or ambiguous causal inferences in the final PAG.
 \end{document}
