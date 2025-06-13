@@ -1,33 +1,44 @@
 \documentclass[a4paper,12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{amsmath}
-\usepackage{pdflscape}
+\usepackage{amsmath, amssymb}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{graphics}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{appendix}
-\usepackage{amsmath}
-\usepackage{amssymb}
 \usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage{listings}
+\usepackage{biblatex}
+\addbibresource{references.bib} 
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{pdflscape}
 \usepackage{hyperref}
+\usepackage{subfiles}
+
+\geometry{margin=1in}
+
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
     filecolor=magenta,      
     urlcolor=cyan,
-    pdftitle={Overleaf Example},
+    pdftitle={Causal Discovery on HBSC Data},
     pdfpagemode=FullScreen,
-    }
+}
 
 \urlstyle{same}
-\newcommand{\indep}{\perp\!\!\!\!\perp} 
+
+% \newcommand{\indep}{\perp\!\!\!\!\perp} 
 % \usepackage{natbib}
 \usepackage{listings}
+\usepackage{pdfpages}
 \usepackage{biblatex}
-\addbibresource{references.bib} 
+\addbibresource{references.bib}
+\usepackage{subfiles}
 \usepackage{hyperref}
 \usepackage{geometry}
 \usepackage{float}
@@ -35,14 +46,21 @@
 \title{Causal Discovery on HBSC Data}
 \author{Daryna Nedilko gtb950}
 \date{\today}
-\usepackage{subfiles}
+
+
 \begin{document}
 
+\includepdf[pages=-]{gai_declar.pdf}
 \maketitle
 
-\input{Report/final_report/abstract}
+\begin{abstract}
+    \subfile{abstract}
+\end{abstract}
 
+
+{\small
 \tableofcontents
+}
 
 \subfile{introduction}
 \subfile{data}
@@ -55,8 +73,9 @@
 
 % \bibliographystyle{plainnat}
 \printbibliography
+
 \begin{appendices}
-\subfile{Report/final_report/appendix}
+\subfile{appendix}
 \end{appendices}
 
 \end{document}

@@ -1,7 +1,7 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
 \section{Methodology}
-For this report, we focus on constraint-based algorithms, namely Fast Causal Inference (FCI). The constraint-based approach to causal discovery employs conditional independence testing or m-separation constraints to recover features of the causal MAG. For the results to be valid, a set of assumptions must hold to ensure that statistical independence reflects the actual absence of causation. FCI is a global search algorithm, meaning it uncovers the full relationship graph between variables in the dataset.
+For this report, we focus on constraint-based algorithms, namely Fast Causal Inference (FCI). The constraint-based approach to causal discovery employs conditional independence(CI) testing or m-separation constraints to recover features of the causal MAG. For the results to be valid, a set of assumptions must hold to ensure that statistical independence reflects the actual absence of causation. FCI is a global search algorithm, meaning it uncovers the full relationship graph between variables in the dataset.
 \subsection{Assumptions}
 \begin{itemize}
     \item \textbf{A1. Causal Markov Condition} \\
@@ -34,16 +34,16 @@ For this report, we focus on constraint-based algorithms, namely Fast Causal Inf
 \subsection{Fast Causal Inference}
 The algorithm consists primarily of two stages. In the first stage, it identifies the adjacencies in the causal MAG. The inference of these adjacencies is based on the principle that two variables are adjacent in a MAG if and only if they are not m-separated by any set of other variables in the graph. Essentially, the algorithm searches for every pair of variables to find a set of other variables that makes them conditionally independent. They are not considered adjacent if such a set is found. If all assumptions are fulfilled, the FCI algorithm successfully determines the correct adjacencies.
 
-The second stage involves inferring edge marks. During this stage, the algorithm applies a series of orientation rules (as referenced in \cite{ZHANG20081873}) to introduce arrowheads or tails, with circles ($\circ$) representing undetermined edge marks. The final output of the algorithm is PAG, which means the Markov equivalence class as determined by the oracle of conditional independence.
+The second stage involves inferring edge marks. During this stage, the algorithm applies a series of orientation rules (as referenced in \cite{ZHANG20081873}) to introduce arrowheads or tails, with circles ($\circ$) representing undetermined edge marks. The final output of the algorithm is PAG, which means the Markov equivalence class as determined by the oracle of CI.
 
-\subsection{Conditional Independence tests}
-Having clear m-separation statements would require an oracle capable of providing the correct conditional independence information. In practice, CI tests are used to approximate m-separation statements, which describe a MAG. These tests determine weather \( X \) and \( Y \) are conditionally independent given a conditioning set \( S = \{s_1, \dots, s_d\} \), where \( d \) is the number of nodes in the set. In other words, the test checks whether \( S \) serves as a separating set (Sepset) for \( X \) and \( Y \) in the learned graph. If \( S = \emptyset \), the test is for marginal independence between \( X \) and \( Y \).
+\subsection{CI tests}
+Having clear m-separation statements would require an oracle capable of providing the correct CI information. In practice, CI tests are used to approximate m-separation statements, which describe a MAG. These tests determine weather \( X \) and \( Y \) are conditionally independent given a conditioning set \( S = \{s_1, \dots, s_d\} \), where \( d \) is the number of nodes in the set. In other words, the test checks whether \( S \) serves as a separating set (Sepset) for \( X \) and \( Y \) in the learned graph. If \( S = \emptyset \), the test is for marginal independence between \( X \) and \( Y \).
 
-CI tests operate using a significance level \( \alpha \), which is an arbitrary threshold determining whether the observed (in)dependence is statistically significant. While typically referred to as CI tests, they are also used for unconditional independence when \( S = \emptyset \). However, they only reflect the conditional independencies present in the observed data, which may not perfectly align with those in the true underlying causal structure. These tests are prone to errors, particularly with small sample sizes. Mistakes made early in the discovery process, such as incorrectly removing an edge due to a false detection of independence, can result in incorrect graph structures later.
+CI tests operate using a significance level \( \alpha \), which is an arbitrary threshold determining whether the observed (in)dependence is statistically significant. CI tests are also used for marginal independence when \( S = \emptyset \). However, they only reflect the conditional independencies present in the observed data, which may not perfectly align with those in the true underlying causal structure. These tests are prone to errors, particularly with small sample sizes. Mistakes made early in the discovery process, such as incorrectly removing an edge due to a false detection of independence, can result in incorrect graph structures later(error propagation).
 
 \subsubsection*{Statistical CI Tests for Discrete Data}
 
-The most commonly used conditional independence (CI) tests for discrete data are the \( G^2 \) and \( \chi^2 \) statistical tests. Both assume a null hypothesis stating that variables \( A \) and \( Y \) are conditionally independent given a set of variables \( S \). These tests yield a statistic in the form of a p-value, indicating the probability of observing the data under the null hypothesis. If the p-value falls below the chosen significance level \( \alpha \), the null hypothesis is rejected, suggesting that \( A \) and \( Y \) are conditionally dependent.
+The most commonly used CI tests for discrete data are the \( G^2 \) and \( \chi^2 \) statistical tests. Both assume a null hypothesis stating that variables \( A \) and \( Y \) are conditionally independent given a set of variables \( S \). These tests yield a statistic in the form of a p-value, indicating the probability of observing the data under the null hypothesis. If the p-value falls below the chosen significance level \( \alpha \), the null hypothesis is rejected, suggesting that \( A \) and \( Y \) are conditionally dependent.
 
 The general form of the $ G^2 $ Test statistic( likelihood-ratio test statistic) is as follows:
 
@@ -63,7 +63,7 @@ Thus, the $ G^2 $ statistic can be expressed as:
 G^2 = 2 \cdot \sum_{x,y,s} N_{\text{xys}} \ln \left( \frac{N_{\text{xys}} N_s}{N_{\text{xs}} N_{\text{ys}}} \right)
 \]
 
-Here, $ x $ and $ y $ range over the values of variables X and Y, while $ s $ covers all combinations of values within the set S. In this context, $ N $ represents the size of the corresponding subset. The p-value is calculated under the assumption that none of the values $ N_{\text{xys}} $ is zero, meaning that every possible combination of values is present in the data. If any combination has $ N_{\text{xys}} $ equal to zero, we heuristically reduce the degrees of freedom (df) for the p-value for each such combination. It is calculated under the assumption that none of the values $N_{xys}$ is zero. 
+Here, $ x $ and $ y $ range over the values of variables X and Y, while $ s $ covers all combinations of values within the set S. In this context, $ N $ represents the size of the corresponding subset. The p-value is calculated under the assumption that none of the values $ N_{\text{xys}} $ is zero, meaning that every possible combination of values is present in the data. If any combination has $ N_{\text{xys}} $ equal to zero, we heuristically reduce the degrees of freedom (df) for the p-value for each such combination. It is calculated under the assumption that none of the values $N_{xys}$ is zero\cite{Kitson2023}. 
 % That 
 % is, every possible combination of values is present in the data. If it is not, we heuristically reduce $df$ for p-value for every combination of values $N_{xys}$ is zero.
 
@@ -74,7 +74,7 @@ The tests are asymptotically equivalent and converge similarly for small dataset
 
 \subsection{Algorithm Description}
 \subsubsection{Input}
-The algorithm takes as input three components: a dataset, a conditional independence test and a significance level $\alpha$ for the CI tests. The dataset should include the variables of interest. The data can be continuous, discrete, or mixed.
+The algorithm takes as input three components: a dataset, a CI test and a significance level $\alpha$ for the CI tests. The dataset should include the variables of interest. The data can be continuous, discrete, or mixed.
 Significance level($\alpha$): Typically 0.05, to determine whether to reject the null hypothesis of independence.
 
 \subsubsection{Output}
@@ -124,7 +124,7 @@ FCI is said to be sound and complete when all assumptions are fulfilled.
   Observational data on variables \( X, Y, C, D \). Latent confounders and selection bias may be present.
 
   \item Skeleton: 
-  Conditional independence tests remove edges:  
+  CI tests remove edges:  
   \( X \perp\!\!\!\perp Y \Rightarrow \) remove \( X - Y \)  
   \( C \perp\!\!\!\perp D \,|\, Y \Rightarrow \) remove \( C - D \)
 
