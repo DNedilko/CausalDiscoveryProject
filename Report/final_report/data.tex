@@ -4,20 +4,21 @@
 \section{Data Description and Preparation}
 
 % \subsection{Source, Context, and Variable Selection}
-We use the 2018 Health Behaviour in School-aged Children (HBSC) dataset, a cross-national survey supported by the WHO, which gathers health-related information from adolescents aged 11, 13, and 15. This dataset encompasses over 120 variables and covers aspects such as well-being, social relationships, behaviours, and demographic characteristics across more than 40 countries. The dataset comprises 120 variables. Detailed description of each variable available in the official report \cite{HBSC2018OA_ed1}. 
+We use the 2018 Health Behaviour in School-aged Children (HBSC) dataset, a cross-national survey supported by the WHO, which gathers health-related information from adolescents aged 11, 13, and 15. This dataset encompasses over 120 variables and covers areas such as well-being, social relationships, behaviours, and demographic characteristics across more than 40 countries. Detailed description of each variable available in the official report \cite{HBSC2018OA_ed1}. 
 
 These variables offer in-depth insights into individuals' health, well-being, and lifestyles. Furthermore, they include indicators related to family structure, affluence, and socio-economic status. For our research, the most critical variables are those measuring the frequency of bullying and how well individuals perceive their social integration within groups, including school peers and friends, the expression of their emotions, and their overall life satisfaction(See Table \ref{tab:hbsc_variables_grouped}  - key categories are in bold).
 
 % In the following sections, we select only a subset that brings the most information to our analysis.
 The dataset includes two computed indicators:
 \begin{itemize}
- \item \texttt{IRFAS} – Family Affluence Scale III (continuous score)
- \item \texttt{IRRELFAS} – Relative family affluence category (categorical: low, medium, high)
+    \item \texttt{IRFAS} – Family Affluence Scale III (continuous score)
+    \item \texttt{IRRELFAS} – Relative family affluence category (categorical: low, medium, high)
 \end{itemize}
- 
-Variables such as IRFAS and IRRELFAS\_LMH are determined by a set of indicators that reflect family affluence. Despite a noticeable gap of nearly 6 points in the average weighted FAS III score for Luxembourg and Armenia (Figure \ref{fig:IRFAS_histogram}), the weighted mode of Relative FAS remains consistent across all regions at a medium level. This prompted us to investigate the relationship between the continuous and categorical versions of the score. Publications\cite{McCormack2011} that FAS is calculated using the following scheme: Responses to individual items were summed to derive a total FAS score and then categorized into three groups (low FAS score = 0 to 4; medium FAS score = 5 or 6; or high FAS score = 7 or 8). However, as one can observe in the table  \ref{tab:IRFAS_IRRELFAS_uniq}, it does not accurately reflect the real data setup, as countries with different FAS III have very similar Relative FAS III distributions \ref{appendix:FASIII_RelFAS}. Therefore, we chose to disregard the categorical version of the score and treated the continuous score as a categorical value, as it is an integer that varies from 0 to 13. The value is set to None if a respondent has not answered any of the component questions. Other than that, we deem FAS III redundant for our further analysis, as it is a resulting variable for other socio-economic backgrounds of an individual[Table \ref{tab:hbsc_variables_grouped}].
-\input{Report/final_report/tables/IRFAS_IRRELFAS_uniq}
-\begin{table}[H]
+
+ \input{Report/final_report/tables/IRFAS_IRRELFAS_uniq}
+Variables such as IRFAS and IRRELFAS\_LMH are determined by a set of indicators that reflect family affluence. Despite a noticeable gap of nearly 6 points in the average weighted FAS III score for Luxembourg and Armenia (Figure \ref{fig:IRFAS_histogram}), the weighted mode of Relative FAS remains consistent across all regions at a medium level. This prompted us to investigate the relationship between the continuous and categorical versions of the score. McCormack (2011) states that FAS is calculated using the following scheme: Responses to individual items are summed to derive a total FAS score, which is then categorised into three groups: low FAS score (0 to 4), medium FAS score (5 or 6), or high FAS score (7 or 8). However, as one can observe in the table  \ref{tab:IRFAS_IRRELFAS_uniq}, it does not accurately reflect the real data setup, as countries with different FAS III have very similar Relative FAS III distributions \ref{appendix:FASIII_RelFAS}. Therefore, we chose to disregard the categorical version of the score and treated the continuous score as a categorical value, as it is an integer that varies from 0 to 13. The value is set to None if a respondent has not answered any of the component questions. Other than that, we deem FAS III redundant for our further analysis, as it is a resulting variable for other socio-economic backgrounds of an individual[Table \ref{tab:hbsc_variables_grouped}].
+
+\begin{table}[!htb]
 \small 
   \centering
   \begin{tabular}{|p{25mm}|p{65mm}|p{65mm}|}
@@ -81,13 +82,12 @@ We exclude deterministic variables such as \texttt{IRFAS, IRRELFAS\_LMH, MBMI, I
 
 \subsection{Data Issues and Preprocessing}
 \begin{itemize}
-  \item \textbf{Missing data}: 
-  Missing data is handled for us so that we won't get stuck on it for too long. In the original report \cite{HBSC2018OA_ed1}, randomly missing values coded as sysmiss and represented as 'Nones' in the dataset are shown. Besides that, there are also more types of missingness observed in data, such as "Missing due to skip pattern"(99) or "Missing due to inconsistent answer"(-99). Fortunately, 99 and -99 missingness types are not present in our subset of data. Since the rest is missing completely at random, by assumption, we drop the records with missing values.
-  \item \textbf{Data types}: To move it into a discrete realm, we select discrete versions of variables available in the dataset. All categorical string variables are label-encoded into integers. 
-  \item \textbf{Sample size}: Sample size for Ukraine after cleaning is 6660 records. 
+  \item   Missing data is handled for us so that we won't get stuck on it for too long. In the original report \cite{HBSC2018OA_ed1}, randomly missing values coded as sysmiss and represented as 'Nones' in the dataset are shown. Besides that, there are also more types of missingness observed in data, such as "Missing due to skip pattern"(99) or "Missing due to inconsistent answer"(-99). Fortunately, 99 and -99 missingness types are not present in our subset of data. Since the rest is missing completely at random, by assumption, we drop the records with missing values, accounting for the qualities of FCI to handle selection bias\cite{ZHANG20081873} that might occur after such data manipulation. 
+  \item For the few continuous ones, we selected their discrete counterparts where available. All categorical string variables were label-encoded into integers. 
+  \item  The resulting sample size for Ukraine is 6,660 records. This is sufficient to produce statistically meaningful results, even after removing records with missing values. 
+  \item We acknowledge that using only Ukrainian data limits generalizability.
 \end{itemize}
 
-\textcolor{teal}{ELABORATE MORE}
 
 % \subsection{Scientific Question}
 % Relationship of social integration of a child and aggression levels channeled through bullying and participation in fights.
